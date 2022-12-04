@@ -43,16 +43,6 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: height * 0.07,
                 ),
-                // TextFormField(
-                //   controller: userCtl,
-                //   decoration: InputDecoration(
-                //     labelText: "Username ",
-                //     labelStyle: TextStyle(
-                //       color: Color(0XFF1C2F3D),
-                //       fontSize: 21,
-                //     ),
-                //   ),
-                // ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 1),
                   child: TextField(
@@ -73,27 +63,6 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: height * 0.03,
                 ),
-                // TextFormField(
-                //   controller: pwdCtl,
-                //   obscureText: hidePassword,
-                //   decoration: InputDecoration(
-                //     labelText: "Password",
-                //     labelStyle: TextStyle(
-                //       color: Color(0XFF1C2F3D),
-                //       fontSize: 21,
-                //     ),
-                //     suffixIcon: IconButton(
-                //         onPressed: () {
-                //           setState(() {
-                //             hidePassword = !hidePassword;
-                //           });
-                //         },
-                //         icon: Icon(hidePassword
-                //             ? Icons.visibility_off
-                //             : Icons.visibility),
-                //         color: Colors.black38),
-                //   ),
-                // ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 1),
                   child: TextField(
