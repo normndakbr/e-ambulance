@@ -246,7 +246,7 @@ class ContentDetail extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            Navigator.pushNamed(context, '/pesananAmbulance');
+            Navigator.pushNamed(context, '/trackingAmbulance');
           },
         ),
       ),

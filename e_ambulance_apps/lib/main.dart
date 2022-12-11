@@ -1,5 +1,6 @@
 import 'package:e_ambulance_apps/pages/login.dart';
 import 'package:e_ambulance_apps/pages/pesananAmbulance.dart';
+import 'package:e_ambulance_apps/pages/trackingAmbulance.dart';
 import 'package:e_ambulance_apps/pages/riwayat.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginPage(),
         '/pesananAmbulance': (context) => PesananAmbulance(),
+        '/trackingAmbulance': (context) => TrackingAmbulance(),
         '/riwayat': (context) => Riwayat(),
       },
     );
