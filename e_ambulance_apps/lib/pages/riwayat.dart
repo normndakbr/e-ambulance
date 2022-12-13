@@ -91,15 +91,14 @@ class _RiwayatState extends State<Riwayat> {
             SizedBox(
               height: height * 0.03,
             ),
-            SizedBox(
-              height: 200,
+            Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
-                physics: NeverScrollableScrollPhysics(),
+                // physics: NeverScrollableScrollPhysics(),
                 child: ListView.builder(
                     shrinkWrap: true,
                     padding: const EdgeInsets.all(8),
-                    itemCount: 5,
+                    itemCount: 20,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                         height: 50,
