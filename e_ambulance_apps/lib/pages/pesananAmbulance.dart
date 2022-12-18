@@ -18,6 +18,14 @@ class PesananAmbulance extends StatefulWidget {
 }
 
 class _PesananAmbulanceState extends State<PesananAmbulance> {
+  var flagPesanan = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -47,19 +55,29 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
               height: height * 0.03,
             ),
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
+              child: GestureDetector(
+                onDoubleTap: () => {
+                  setState(() {
+                    flagPesanan = !flagPesanan;
+                  })
+                },
+                child: Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    border: Border.all(
+                      color: Colors.white,
+                    ),
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20.0),
+                      topLeft: Radius.circular(20.0),
+                    ),
                   ),
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20.0),
-                    topLeft: Radius.circular(20.0),
-                  ),
+                  child: flagPesanan == false
+                      ? PesananKosong(height: height, width: width)
+                      : PesananDetail(height: height, width: width),
+                  // child: PesananKosong(height: height, width: width),
+                  // child: PesananDetail(height: height, width: width),
                 ),
-                child: PesananKosong(height: height, width: width),
-                // child: PesananDetail(height: height, width: width),
               ),
             ),
           ],
