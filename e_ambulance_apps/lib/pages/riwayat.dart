@@ -24,8 +24,6 @@ class _RiwayatState extends State<Riwayat> {
       };
     }).toList();
 
-    print(mapData);
-
     super.initState();
   }
 
