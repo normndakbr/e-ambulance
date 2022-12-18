@@ -26,17 +26,6 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        // appBar: AppBar(
-        //   elevation: 0,
-        //   backgroundColor: Colors.transparent,
-        //   automaticallyImplyLeading: false,
-        //   actions: [
-        //     Container(
-        //       padding: EdgeInsets.only(top: 20),
-        //       child: ButtonRiwayat(),
-        //     ),
-        //   ],
-        // ),
         body: Column(
           children: [
             SizedBox(
@@ -69,8 +58,8 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
                     topLeft: Radius.circular(20.0),
                   ),
                 ),
-                // child: PesananKosong(height: height, width: width),
-                child: PesananDetail(height: height, width: width),
+                child: PesananKosong(height: height, width: width),
+                // child: PesananDetail(height: height, width: width),
               ),
             ),
           ],
