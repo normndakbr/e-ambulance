@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../repositories/user_repositories.dart';
 import '../services/sharedPreferences.dart';
 import 'package:cool_alert/cool_alert.dart';
 
@@ -10,16 +11,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool hidePassword = true;
   TextEditingController userCtl = TextEditingController();
   TextEditingController pwdCtl = TextEditingController();
   final SharedPreferenceService sharedPref = SharedPreferenceService();
+  late UserRepository userRepository;
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     const color = Color(0xFF0E9E2E);
+
+    @override
+    void initState() {
+      userRepository = UserRepository();
+      super.initState();
+    }
 
     return Scaffold(
       backgroundColor: color,
@@ -46,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 1),
                   child: TextField(
+                    controller: userCtl,
                     decoration: InputDecoration(
                       filled: true,
                       border: OutlineInputBorder(
@@ -66,6 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 1),
                   child: TextField(
+                    controller: pwdCtl,
                     obscureText: true,
                     enableSuggestions: false,
                     autocorrect: false,
@@ -102,7 +111,35 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/pesananAmbulance');
+                        UserRepository.login(userCtl.text, pwdCtl.text)
+                            .then((value) => {
+                                  if (value.status == 200)
+                                    {
+                                      CoolAlert.show(
+                                          context: context,
+                                          type: CoolAlertType.success,
+                                          text: value.message,
+                                          confirmBtnText: 'Lanjut',
+                                          confirmBtnColor: color,
+                                          onConfirmBtnTap: () {
+                                            Navigator.pop(context);
+                                            Navigator.pushReplacementNamed(
+                                                context, '/pesananAmbulance');
+                                          }),
+                                    }
+                                  else
+                                    {
+                                      CoolAlert.show(
+                                          context: context,
+                                          type: CoolAlertType.error,
+                                          text: "Login Gagal!!",
+                                          confirmBtnText: 'Coba Lagi',
+                                          confirmBtnColor: color,
+                                          onConfirmBtnTap: () {
+                                            Navigator.pop(context);
+                                          }),
+                                    }
+                                });
                       },
                     ),
                   ),
