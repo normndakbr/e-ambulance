@@ -113,6 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         UserRepository.login(userCtl.text, pwdCtl.text)
                             .then((value) => {
+                                  print("p_id_user => " + value.data.p_id_user),
                                   if (value.status == 200)
                                     {
                                       CoolAlert.show(
@@ -121,7 +122,13 @@ class _LoginPageState extends State<LoginPage> {
                                           text: value.message,
                                           confirmBtnText: 'Lanjut',
                                           confirmBtnColor: color,
-                                          onConfirmBtnTap: () {
+                                          onConfirmBtnTap: () async {
+                                            await sharedPref.writeData(
+                                                'p_username',
+                                                value.data.p_username);
+                                            await sharedPref.writeData(
+                                                'p_id_user',
+                                                value.data.p_id_user);
                                             Navigator.pop(context);
                                             Navigator.pushReplacementNamed(
                                                 context, '/pesananAmbulance');
@@ -132,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                                       CoolAlert.show(
                                           context: context,
                                           type: CoolAlertType.error,
-                                          text: "Login Gagal!!",
+                                          text: value.message,
                                           confirmBtnText: 'Coba Lagi',
                                           confirmBtnColor: color,
                                           onConfirmBtnTap: () {
