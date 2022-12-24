@@ -7,11 +7,11 @@ class ApiConstants {
   static String loginEndpoint = '/login';
 
   // read transaksi
-  static String readTransaksiEndpoint = '/id_supir/id_status_transaksi';
+  static String readTransaksiEndpoint = '/read_transaksi';
 
+  static String id_status_transaksi = "e17b741e-46a8-1712-cdb6-1c010a473697";
   // read history
-  static String readHistoryEndpoint =
-      '/read_history/id_transaksi/id_transaksi2/id_transaksi3';
+  static String readHistoryEndpoint = '/read_history';
 
   // update transaksi
   static String updateTransaksiEndpoint = '/update_transaksi';

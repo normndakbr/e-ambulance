@@ -1,6 +1,8 @@
 import 'package:e_ambulance_apps/widgets/historyItem.dart';
 import 'package:flutter/material.dart';
 import 'package:e_ambulance_apps/services/sharedPreferences.dart';
+import '../repositories/history_repositories.dart';
+import '../models/history_model.dart';
 import './pesananAmbulance.dart';
 
 class Riwayat extends StatefulWidget {
@@ -12,9 +14,46 @@ class Riwayat extends StatefulWidget {
 
 class _RiwayatState extends State<Riwayat> {
   var mapData;
+  HistoryRepository historyReps = HistoryRepository();
+  List<Data> listData = [];
+
+  fetchData() async {
+    await HistoryRepository.fetchHistory().then(
+      (value) => {
+        if (value.status == 200)
+          {
+            if (value.data.isNotEmpty)
+              {
+                for (var i = 0; i < value.data.length; i++)
+                  {
+                    print(i),
+                    print(value.data[i].pIdTransaksi),
+                    print(value.data[i].pNomorInvoice),
+                    print(value.data[i].pAlamat),
+                    print(value.data[i].pTanggalTransaksi.toString()),
+                    print(value.data[i].pIdStatusTransaksi),
+                    listData.add(
+                      Data(
+                        pIdTransaksi: value.data[i].pIdTransaksi,
+                        pNomorInvoice: value.data[i].pNomorInvoice,
+                        pAlamat: value.data[i].pAlamat,
+                        pTanggalTransaksi: value.data[i].pTanggalTransaksi,
+                        pIdStatusTransaksi: value.data[i].pIdStatusTransaksi,
+                      ),
+                    ),
+                  },
+                print("List Data Length =>  " + listData.length.toString()),
+              }
+          }
+        else
+          {}
+      },
+    );
+  }
 
   @override
   void initState() {
+    listData = [];
     mapData = items.map((e) {
       return {
         "alamat": e.alamat,
@@ -24,6 +63,7 @@ class _RiwayatState extends State<Riwayat> {
       };
     }).toList();
 
+    fetchData();
     super.initState();
   }
 
@@ -109,18 +149,32 @@ class _RiwayatState extends State<Riwayat> {
               height: height * 0.03,
             ),
             Expanded(
-              child: ListView.builder(
-                  itemCount: mapData.length,
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  itemBuilder: (BuildContext context, int element) {
-                    return HistoryItem(
-                      alamat: mapData[element]['alamat'],
-                      statusPerjalanan: mapData[element]['statusPerjalanan'],
-                      noInvoice: mapData[element]['noInvoice'],
-                      tglPerjalanan: mapData[element]['tglPerjalanan'],
-                    );
-                  }),
+              child: listData.length > 0
+                  ? ListView.builder(
+                      itemCount: listData.length,
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      itemBuilder: (BuildContext context, int element) {
+                        return HistoryItem(
+                          alamat: listData[element].pAlamat,
+                          statusPerjalanan:
+                              listData[element].pIdStatusTransaksi,
+                          noInvoice: listData[element].pNomorInvoice,
+                          tglPerjalanan:
+                              listData[element].pTanggalTransaksi.toString(),
+                        );
+                      })
+                  : Center(
+                      child: Text(
+                        'Tidak ada riwayat perjalanan',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: height * 0.028,
+                        ),
+                      ),
+                    ),
             ),
           ],
         ),

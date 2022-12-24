@@ -1,6 +1,8 @@
+import 'package:e_ambulance_apps/repositories/history_repositories%20copy.dart';
 import 'package:e_ambulance_apps/widgets/pesananKosong.dart';
 import 'package:flutter/material.dart';
 import 'package:e_ambulance_apps/services/sharedPreferences.dart';
+import '../models/beranda_model.dart';
 
 // pages
 import '../widgets/pesananDetail.dart';
@@ -19,10 +21,29 @@ class PesananAmbulance extends StatefulWidget {
 
 class _PesananAmbulanceState extends State<PesananAmbulance> {
   var flagPesanan = false;
+  BerandaRepository historyReps = BerandaRepository();
+
+  fetchData() async {
+    await BerandaRepository.fetchBeranda().then(
+      (value) => {
+        print(value.status),
+        // if (value.status == 200)
+        //   {
+        //     flagPesanan = true,
+        //     print(value.data.pAlamat),
+        //   }
+        // else
+        //   {
+        //     flagPesanan = false,
+        //     print("Data Kosong"),
+        //   }
+      },
+    );
+  }
 
   @override
   void initState() {
-    // TODO: implement initState
+    fetchData();
     super.initState();
   }
 
@@ -32,55 +53,58 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
     var width = MediaQuery.of(context).size.width;
 
     return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: Column(
-          children: [
-            SizedBox(
-              height: height * 0.03,
-            ),
-            Align(
-              alignment: Alignment.topRight,
-              child: ConstrainedBox(
-                child: Align(
-                  child: ButtonRiwayat(),
-                ),
-                constraints: BoxConstraints(
-                  minWidth: 50,
-                  maxWidth: 100,
-                ),
+      child: WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          body: Column(
+            children: [
+              SizedBox(
+                height: height * 0.03,
               ),
-            ),
-            SizedBox(
-              height: height * 0.03,
-            ),
-            Expanded(
-              child: GestureDetector(
-                onDoubleTap: () => {
-                  setState(() {
-                    flagPesanan = !flagPesanan;
-                  })
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                      color: Colors.white,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20.0),
-                      topLeft: Radius.circular(20.0),
-                    ),
+              Align(
+                alignment: Alignment.topRight,
+                child: ConstrainedBox(
+                  child: Align(
+                    child: ButtonRiwayat(),
                   ),
-                  child: flagPesanan == false
-                      ? PesananKosong(height: height, width: width)
-                      : PesananDetail(height: height, width: width),
-                  // child: PesananKosong(height: height, width: width),
-                  // child: PesananDetail(height: height, width: width),
+                  constraints: BoxConstraints(
+                    minWidth: 50,
+                    maxWidth: 100,
+                  ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(
+                height: height * 0.03,
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onDoubleTap: () => {
+                    setState(() {
+                      flagPesanan = !flagPesanan;
+                    })
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        topLeft: Radius.circular(20.0),
+                      ),
+                    ),
+                    child: flagPesanan == false
+                        ? PesananKosong(height: height, width: width)
+                        : PesananDetail(height: height, width: width),
+                    // child: PesananKosong(height: height, width: width),
+                    // child: PesananDetail(height: height, width: width),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
