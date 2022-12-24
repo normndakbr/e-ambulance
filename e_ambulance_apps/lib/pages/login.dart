@@ -1,3 +1,4 @@
+import 'package:e_ambulance_apps/pages/pesananAmbulance.dart';
 import 'package:flutter/material.dart';
 import '../repositories/user_repositories.dart';
 import '../services/sharedPreferences.dart';
@@ -130,8 +131,12 @@ class _LoginPageState extends State<LoginPage> {
                                                 'p_id_user',
                                                 value.data.p_id_user);
                                             Navigator.pop(context);
-                                            Navigator.pushReplacementNamed(
-                                                context, '/pesananAmbulance');
+                                            Navigator.of(context)
+                                                .pushReplacement(
+                                                    MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  PesananAmbulance(),
+                                            ));
                                           }),
                                     }
                                   else

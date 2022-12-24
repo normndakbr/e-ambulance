@@ -1,34 +1,30 @@
 import 'dart:convert';
 
-List<Data> listHistoryFromJson(String str) => List<Data>.from(
-      json.decode(str).map((x) => Data.fromJson(x)),
-    );
-
-class HistoryRes {
+class BerandaRes {
   late int status;
   late String message;
-  List<Data> data;
+  late Data data;
 
-  HistoryRes({
-    required this.status,
-    required this.message,
-    required this.data,
+  BerandaRes({
+    required status,
+    required message,
+    required data,
   });
 
-  factory HistoryRes.createHistoryRes(Map<String, dynamic> json) {
-    return HistoryRes(
+  factory BerandaRes.createHistoryRes(Map<String, dynamic> json) {
+    var response = BerandaRes(
       status: json['status'],
       message: json['message'],
-      data: List<Data>.from(json["data"].map((x) => Data.fromJson(x))),
+      data: json['data'],
     );
+
+    return response;
   }
 
   Map<String, dynamic> toJson() => {
         "status": status,
         "message": message,
-        "data": List<dynamic>.from(
-          data.map((x) => x.toJson()),
-        ),
+        "data": data,
       };
 }
 
