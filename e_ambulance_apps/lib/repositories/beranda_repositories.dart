@@ -29,7 +29,7 @@ class BerandaRepository {
 
     var jsonObject = json.decode(apiResult.body);
 
-    print(jsonObject);
+    // print(jsonObject);
 
     // return listHistoryFromJson(jsonObject);
     return BerandaRes.createHistoryRes(jsonObject);

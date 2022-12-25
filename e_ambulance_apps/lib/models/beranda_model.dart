@@ -6,16 +6,16 @@ class BerandaRes {
   late Data data;
 
   BerandaRes({
-    required status,
-    required message,
-    required data,
+    required this.status,
+    required this.message,
+    required this.data,
   });
 
   factory BerandaRes.createHistoryRes(Map<String, dynamic> json) {
     var response = BerandaRes(
       status: json['status'],
       message: json['message'],
-      data: json['data'],
+      data: Data.fromJson(json['data']),
     );
 
     return response;
@@ -30,32 +30,41 @@ class BerandaRes {
 
 class Data {
   late String pIdTransaksi;
-  late String pNomorInvoice;
+  late String pNamaLengkap;
   late String pAlamat;
+  late String pNomorTelepon;
   late DateTime pTanggalTransaksi;
   late String pIdStatusTransaksi;
+  late String pKategoriAmbulance;
+  late String pNomorInvoice;
 
   Data({
     pIdTransaksi,
-    pNomorInvoice,
+    pNamaLengkap,
     pAlamat,
+    pNomorTelepon,
     pTanggalTransaksi,
     pIdStatusTransaksi,
+    pNomorInvoice,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
     pIdTransaksi = json["p_id_transaksi"];
-    pNomorInvoice = json["p_nomor_invoice"];
+    pNamaLengkap = json['p_nama_lengkap'];
     pAlamat = json["p_alamat"];
+    pNomorTelepon = json['p_nomor_telepon'];
     pTanggalTransaksi = DateTime.parse(json["p_tanggal_transaksi"]);
     pIdStatusTransaksi = json["p_id_status_transaksi"];
+    pNomorInvoice = json["p_nomor_invoice"];
   }
 
   Map<String, dynamic> toJson() => {
         "p_id_transaksi": pIdTransaksi,
-        "p_nomor_invoice": pNomorInvoice,
+        "p_nama_lengkap": pNamaLengkap,
         "p_alamat": pAlamat,
+        "p_nomor_telepon": pNomorTelepon,
         "p_tanggal_transaksi": pTanggalTransaksi.toIso8601String(),
         "p_id_status_transaksi": pIdStatusTransaksi,
+        "p_nomor_invoice": pNomorInvoice,
       };
 }
