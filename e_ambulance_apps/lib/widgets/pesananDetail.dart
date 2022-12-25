@@ -1,15 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../models/beranda_model.dart';
+import 'package:intl/intl.dart';
 
 class PesananDetail extends StatelessWidget {
-  const PesananDetail({
+  PesananDetail({
     Key? key,
     required this.height,
     required this.width,
+    required this.pesanan,
   }) : super(key: key);
 
   final double height;
   final double width;
+  Data pesanan = Data();
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +75,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text("Kresna Vespri"),
+                    child: Text(pesanan.pNamaLengkap),
                   ),
                 ],
               ),
@@ -91,7 +95,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text("Jl. Veteran Lr. Kenari"),
+                    child: Text(pesanan.pAlamat),
                   ),
                 ],
               ),
@@ -111,7 +115,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text("085145673654"),
+                    child: Text(pesanan.pNomorTelepon),
                   ),
                 ],
               ),
@@ -131,7 +135,10 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text("18/10/2023"),
+                    child: Text(
+                      DateFormat('dd-MM-yyyy')
+                          .format(pesanan.pTanggalTransaksi),
+                    ),
                   ),
                 ],
               ),
@@ -151,7 +158,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text("Ambulance Pasien"),
+                    child: Text(pesanan.pKategoriAmbulance),
                   ),
                 ],
               ),
@@ -191,7 +198,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text("INV - 5543234"),
+                    child: Text(pesanan.pNomorInvoice),
                   ),
                 ],
               ),

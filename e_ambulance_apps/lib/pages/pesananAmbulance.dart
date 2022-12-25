@@ -1,5 +1,4 @@
-import 'package:e_ambulance_apps/repositories/history_repositories%20copy.dart';
-import 'package:e_ambulance_apps/widgets/pesananKosong.dart';
+import 'package:e_ambulance_apps/repositories/beranda_repositories.dart';
 import 'package:flutter/material.dart';
 import 'package:e_ambulance_apps/services/sharedPreferences.dart';
 import '../models/beranda_model.dart';
@@ -21,22 +20,20 @@ class PesananAmbulance extends StatefulWidget {
 
 class _PesananAmbulanceState extends State<PesananAmbulance> {
   var flagPesanan = false;
-  BerandaRepository historyReps = BerandaRepository();
+  BerandaRepository berandaReps = BerandaRepository();
+  Data pesananBaru = Data();
 
   fetchData() async {
     await BerandaRepository.fetchBeranda().then(
       (value) => {
-        print(value.status),
-        // if (value.status == 200)
-        //   {
-        //     flagPesanan = true,
-        //     print(value.data.pAlamat),
-        //   }
-        // else
-        //   {
-        //     flagPesanan = false,
-        //     print("Data Kosong"),
-        //   }
+        if (value.status == 200)
+          {
+            pesananBaru = value.data,
+          }
+        else
+          {
+            print("Tidak ada Pesanan"),
+          }
       },
     );
   }
@@ -82,6 +79,7 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
                   onDoubleTap: () => {
                     setState(() {
                       flagPesanan = !flagPesanan;
+                      fetchData();
                     })
                   },
                   child: Container(
@@ -97,7 +95,11 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
                     ),
                     child: flagPesanan == false
                         ? PesananKosong(height: height, width: width)
-                        : PesananDetail(height: height, width: width),
+                        : PesananDetail(
+                            height: height,
+                            width: width,
+                            pesanan: pesananBaru,
+                          ),
                     // child: PesananKosong(height: height, width: width),
                     // child: PesananDetail(height: height, width: width),
                   ),
