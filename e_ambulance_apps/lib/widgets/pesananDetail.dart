@@ -81,6 +81,7 @@ class PesananDetail extends StatelessWidget {
               ),
               SizedBox(height: sizedBox1),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SizedBox(
@@ -178,7 +179,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text("BG 1234 PLT"),
+                    child: Text(pesanan.pNomorPlat),
                   ),
                 ],
               ),

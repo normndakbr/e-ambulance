@@ -36,6 +36,7 @@ class Data {
   late DateTime pTanggalTransaksi;
   late String pIdStatusTransaksi;
   late String pKategoriAmbulance;
+  late String pNomorPlat;
   late String pNomorInvoice;
 
   Data({
@@ -45,6 +46,8 @@ class Data {
     pNomorTelepon,
     pTanggalTransaksi,
     pIdStatusTransaksi,
+    pKategoriAmbulance,
+    pNomorPlat,
     pNomorInvoice,
   });
 
@@ -55,6 +58,8 @@ class Data {
     pNomorTelepon = json['p_nomor_telepon'];
     pTanggalTransaksi = DateTime.parse(json["p_tanggal_transaksi"]);
     pIdStatusTransaksi = json["p_id_status_transaksi"];
+    pKategoriAmbulance = json["p_kategori_ambulance"];
+    pNomorPlat = json["p_nomor_plat"];
     pNomorInvoice = json["p_nomor_invoice"];
   }
 
@@ -65,6 +70,8 @@ class Data {
         "p_nomor_telepon": pNomorTelepon,
         "p_tanggal_transaksi": pTanggalTransaksi.toIso8601String(),
         "p_id_status_transaksi": pIdStatusTransaksi,
+        "p_kategori_ambulance": pKategoriAmbulance,
+        "p_nomor_plat": pNomorPlat,
         "p_nomor_invoice": pNomorInvoice,
       };
 }

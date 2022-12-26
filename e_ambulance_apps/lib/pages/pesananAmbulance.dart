@@ -28,11 +28,17 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
       (value) => {
         if (value.status == 200)
           {
-            pesananBaru = value.data,
+            setState(() => {
+                  flagPesanan = true,
+                  pesananBaru = value.data,
+                }),
           }
         else
           {
-            print("Tidak ada Pesanan"),
+            setState(() => {
+                  flagPesanan = false,
+                  pesananBaru = value.data,
+                }),
           }
       },
     );
