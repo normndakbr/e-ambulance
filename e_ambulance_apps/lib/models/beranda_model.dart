@@ -75,3 +75,27 @@ class Data {
         "p_nomor_invoice": pNomorInvoice,
       };
 }
+
+class BerandaUpdateRes {
+  late int status;
+  late String message;
+
+  BerandaUpdateRes({
+    required this.status,
+    required this.message,
+  });
+
+  factory BerandaUpdateRes.createBerandaRes(Map<String, dynamic> json) {
+    var response = BerandaUpdateRes(
+      status: json['status'],
+      message: json['message'],
+    );
+
+    return response;
+  }
+
+  Map<String, dynamic> toJson() => {
+        "status": status,
+        "message": message,
+      };
+}

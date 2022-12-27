@@ -9,15 +9,17 @@ import '../pages/pesananAmbulance.dart';
 // widgets
 import '../widgets/trackingDetail.dart';
 import '../widgets/ButtonRiwayat.dart';
+import '../widgets/trackingToRSMH.dart';
 
-class TrackingAmbulance extends StatefulWidget {
-  const TrackingAmbulance({Key? key}) : super(key: key);
+class TrackingAmbulanceToRSMH extends StatefulWidget {
+  const TrackingAmbulanceToRSMH({Key? key}) : super(key: key);
 
   @override
-  State<TrackingAmbulance> createState() => _TrackingAmbulanceState();
+  State<TrackingAmbulanceToRSMH> createState() =>
+      _TrackingAmbulanceToRSMHState();
 }
 
-class _TrackingAmbulanceState extends State<TrackingAmbulance> {
+class _TrackingAmbulanceToRSMHState extends State<TrackingAmbulanceToRSMH> {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -61,7 +63,7 @@ class _TrackingAmbulanceState extends State<TrackingAmbulance> {
                     ),
                   ),
                   // child: PesananKosong(height: height, width: width),
-                  child: TrackingDetail(height: height, width: width),
+                  child: TrackingToRSMH(height: height, width: width),
                 ),
               ),
             ],
