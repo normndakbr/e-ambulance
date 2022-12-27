@@ -1,4 +1,5 @@
 import 'package:cool_alert/cool_alert.dart';
+import 'package:e_ambulance_apps/pages/pesananAmbulance.dart';
 import 'package:e_ambulance_apps/pages/trackingAmbulanceToRSMH.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,8 @@ import 'package:flutter/material.dart';
 import '../repositories/beranda_repositories.dart';
 import '../services/sharedPreferences.dart';
 
-class TrackingDetail extends StatelessWidget {
-  const TrackingDetail({
+class TrackingToRSMH extends StatelessWidget {
+  const TrackingToRSMH({
     Key? key,
     required this.height,
     required this.width,
@@ -91,7 +92,7 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
         width: widget.width * 0.8,
         child: TextButton(
           child: Text(
-            'Sampai Tujuan',
+            'Pengantaran Selesai',
             style: TextStyle(fontSize: widget.fontSize1),
           ),
           style: TextButton.styleFrom(
@@ -111,25 +112,33 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
                 });
             // print("idTransaksi => " + idTransaksi);
             BerandaRepository.updateStatusTransaksi(
-                    idTransaksi, 'accSampaiTujuan')
+                    idTransaksi, 'accSampaiDiRS')
                 .then((value) => {
-                      CoolAlert.show(
-                          context: context,
-                          type: CoolAlertType.success,
-                          text: "Anda telah sampai di tujuan",
-                          confirmBtnText: 'Lanjut',
-                          confirmBtnColor: primaryColor,
-                          onConfirmBtnTap: () async {
-                            await sharedPref.writeData(
-                                'id_transaksi', idTransaksi);
-                            Navigator.pop(context);
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    TrackingAmbulanceToRSMH(),
-                              ),
-                            );
-                          }),
+                      BerandaRepository.updateStatusAmbulance(idTransaksi)
+                          .then((value) => {
+                                BerandaRepository.updateStatusSopir(idTransaksi)
+                                    .then((value) => {
+                                          CoolAlert.show(
+                                              context: context,
+                                              type: CoolAlertType.success,
+                                              text:
+                                                  "Anda telah sampai kembali di Rumah Sakit",
+                                              confirmBtnText:
+                                                  'Konfirmasi Selesai',
+                                              confirmBtnColor: primaryColor,
+                                              onConfirmBtnTap: () async {
+                                                Navigator.pop(context);
+                                                Navigator.of(context)
+                                                    .pushReplacement(
+                                                  MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        PesananAmbulance(),
+                                                  ),
+                                                );
+                                              }),
+                                        }),
+                              }),
                     });
 
             // Navigator.pushNamed(context, '/pesananAmbulance');

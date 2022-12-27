@@ -19,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    var userLevel = 'cef5e5a8-ebdc-b854-5fbf-0615a66e97e2';
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     const color = Color(0xFF0E9E2E);
@@ -115,7 +116,10 @@ class _LoginPageState extends State<LoginPage> {
                         UserRepository.login(userCtl.text, pwdCtl.text)
                             .then((value) => {
                                   print("p_id_user => " + value.data.p_id_user),
-                                  if (value.status == 200)
+                                  print("p_id_user_level => " +
+                                      value.data.p_id_user_level),
+                                  if (value.status == 200 &&
+                                      value.data.p_id_user_level == userLevel)
                                     {
                                       CoolAlert.show(
                                           context: context,
@@ -137,6 +141,19 @@ class _LoginPageState extends State<LoginPage> {
                                               builder: (BuildContext context) =>
                                                   PesananAmbulance(),
                                             ));
+                                          }),
+                                    }
+                                  else if (value.data.p_id_user_level !=
+                                      userLevel)
+                                    {
+                                      CoolAlert.show(
+                                          context: context,
+                                          type: CoolAlertType.error,
+                                          text: 'Akun supir tidak terdaftar',
+                                          confirmBtnText: 'Coba Lagi',
+                                          confirmBtnColor: color,
+                                          onConfirmBtnTap: () {
+                                            Navigator.pop(context);
                                           }),
                                     }
                                   else

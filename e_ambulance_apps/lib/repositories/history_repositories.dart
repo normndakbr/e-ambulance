@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:e_ambulance_apps/models/beranda_model.dart';
+
 import '../models/history_model.dart';
 import '../constants.dart';
 import 'package:http/http.dart' as http;

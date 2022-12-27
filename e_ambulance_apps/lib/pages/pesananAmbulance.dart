@@ -103,14 +103,15 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
                       ),
                     ),
                     child: flagPesanan == false
-                        ? PesananKosong(height: height, width: width)
+                        ? PesananKosong(
+                            height: height,
+                            width: width,
+                          )
                         : PesananDetail(
                             height: height,
                             width: width,
                             pesanan: pesananBaru,
                           ),
-                    // child: PesananKosong(height: height, width: width),
-                    // child: PesananDetail(height: height, width: width),
                   ),
                 ),
               ),

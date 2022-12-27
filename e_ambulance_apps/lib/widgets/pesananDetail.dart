@@ -1,7 +1,12 @@
+import 'package:cool_alert/cool_alert.dart';
+import 'package:e_ambulance_apps/pages/trackingAmbulance.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/beranda_model.dart';
 import 'package:intl/intl.dart';
+
+import '../repositories/beranda_repositories.dart';
+import '../services/sharedPreferences.dart';
 
 class PesananDetail extends StatelessWidget {
   PesananDetail({
@@ -210,10 +215,12 @@ class PesananDetail extends StatelessWidget {
           height: height * 0.08,
         ),
         ContentDetail(
-            height: height,
-            width: width,
-            fontSize1: fontSize1,
-            primaryColor: primaryColor)
+          height: height,
+          width: width,
+          fontSize1: fontSize1,
+          primaryColor: primaryColor,
+          idTransaksi: pesanan.pIdTransaksi,
+        )
       ],
     );
   }
@@ -226,15 +233,21 @@ class ContentDetail extends StatelessWidget {
     required this.width,
     required this.fontSize1,
     required this.primaryColor,
+    required this.idTransaksi,
   }) : super(key: key);
 
   final double height;
   final double width;
   final double fontSize1;
   final Color primaryColor;
+  final String idTransaksi;
 
   @override
   Widget build(BuildContext context) {
+    const color = Color(0xFF0E9E2E);
+    late BerandaRepository berandaRepository;
+    final SharedPreferenceService sharedPref = SharedPreferenceService();
+
     return Center(
       child: SizedBox(
         height: height * 0.085,
@@ -254,7 +267,28 @@ class ContentDetail extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            Navigator.pushNamed(context, '/trackingAmbulance');
+            BerandaRepository.updateStatusTransaksi(idTransaksi, 'accSupir')
+                .then(
+              (value) => {
+                CoolAlert.show(
+                    context: context,
+                    type: CoolAlertType.success,
+                    text: "Pesanan berhasil diterima",
+                    confirmBtnText: 'Lanjut',
+                    confirmBtnColor: color,
+                    onConfirmBtnTap: () async {
+                      await sharedPref.writeData('id_transaksi', idTransaksi);
+                      Navigator.pop(context);
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              TrackingAmbulance(),
+                        ),
+                      );
+                    }),
+                // Navigator.pushNamed(context, '/trackingAmbulance'),
+              },
+            );
           },
         ),
       ),
