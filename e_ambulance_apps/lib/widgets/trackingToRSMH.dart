@@ -3,6 +3,7 @@ import 'package:e_ambulance_apps/pages/pesananAmbulance.dart';
 import 'package:e_ambulance_apps/pages/trackingAmbulanceToRSMH.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../repositories/beranda_repositories.dart';
 import '../services/sharedPreferences.dart';
@@ -109,7 +110,12 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
             ),
           ),
           onPressed: () async {
+            EasyLoading.show(
+              status: 'loading...',
+              maskType: EasyLoadingMaskType.black,
+            );
             await sharedPref.readData('id_transaksi').then((value) => {
+                  EasyLoading.dismiss(),
                   setState(() => {
                         idTransaksi = value,
                       }),
@@ -122,24 +128,43 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
                           .then((value) => {
                                 BerandaRepository.updateStatusSopir(idTransaksi)
                                     .then((value) => {
-                                          CoolAlert.show(
-                                              context: context,
-                                              type: CoolAlertType.success,
-                                              text:
-                                                  "Anda telah sampai kembali di Rumah Sakit",
-                                              confirmBtnText: 'Pesanan Selesai',
-                                              confirmBtnColor: primaryColor,
-                                              onConfirmBtnTap: () async {
-                                                Navigator.pop(context);
-                                                Navigator.of(context)
-                                                    .pushReplacement(
-                                                  MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        PesananAmbulance(),
-                                                  ),
-                                                );
-                                              }),
+                                          if (value.status == 200)
+                                            {
+                                              CoolAlert.show(
+                                                context: context,
+                                                type: CoolAlertType.success,
+                                                text:
+                                                    "Anda telah sampai kembali di Rumah Sakit",
+                                                confirmBtnText:
+                                                    'Pesanan Selesai',
+                                                confirmBtnColor: primaryColor,
+                                                onConfirmBtnTap: () async {
+                                                  Navigator.pop(context);
+                                                  Navigator.of(context)
+                                                      .pushReplacement(
+                                                    MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          PesananAmbulance(),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            }
+                                          else
+                                            {
+                                              EasyLoading.dismiss(),
+                                              CoolAlert.show(
+                                                context: context,
+                                                type: CoolAlertType.error,
+                                                text: value.message,
+                                                confirmBtnText: 'Lanjut',
+                                                confirmBtnColor: primaryColor,
+                                                onConfirmBtnTap: () async {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            }
                                         }),
                               }),
                     });

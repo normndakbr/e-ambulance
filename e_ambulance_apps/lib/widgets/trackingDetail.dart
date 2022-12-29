@@ -2,6 +2,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:e_ambulance_apps/pages/trackingAmbulanceToRSMH.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../repositories/beranda_repositories.dart';
 import '../services/sharedPreferences.dart';
@@ -116,6 +117,10 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
                 ),
               ),
               onPressed: () async {
+                EasyLoading.show(
+                  status: 'loading...',
+                  maskType: EasyLoadingMaskType.black,
+                );
                 await sharedPref.readData('id_transaksi').then((value) => {
                       setState(() => {
                             idTransaksi = value,
@@ -124,27 +129,45 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
                 // print("idTransaksi => " + idTransaksi);
                 BerandaRepository.updateStatusTransaksi(
                         idTransaksi, 'accSampaiTujuan')
-                    .then((value) => {
-                          CoolAlert.show(
-                              context: context,
-                              type: CoolAlertType.success,
-                              text: "Anda telah sampai di tujuan",
-                              confirmBtnText: 'Lanjut',
-                              confirmBtnColor: primaryColor,
-                              onConfirmBtnTap: () async {
-                                await sharedPref.writeData(
-                                    'id_transaksi', idTransaksi);
-                                Navigator.pop(context);
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        TrackingAmbulanceToRSMH(),
-                                  ),
-                                );
-                              }),
-                        });
-
-                // Navigator.pushNamed(context, '/pesananAmbulance');
+                    .then(
+                  (value) => {
+                    EasyLoading.dismiss(),
+                    if (value.status == 200)
+                      {
+                        CoolAlert.show(
+                            context: context,
+                            type: CoolAlertType.success,
+                            text: "Anda telah sampai di tujuan",
+                            confirmBtnText: 'Lanjut',
+                            confirmBtnColor: primaryColor,
+                            onConfirmBtnTap: () async {
+                              await sharedPref.writeData(
+                                  'id_transaksi', idTransaksi);
+                              Navigator.pop(context);
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      TrackingAmbulanceToRSMH(),
+                                ),
+                              );
+                            }),
+                      }
+                    else
+                      {
+                        EasyLoading.dismiss(),
+                        CoolAlert.show(
+                          context: context,
+                          type: CoolAlertType.error,
+                          text: value.message,
+                          confirmBtnText: 'Lanjut',
+                          confirmBtnColor: primaryColor,
+                          onConfirmBtnTap: () async {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      }
+                  },
+                );
               },
             ),
           ),

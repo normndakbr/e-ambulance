@@ -2,6 +2,7 @@ import 'package:e_ambulance_apps/repositories/beranda_repositories.dart';
 import 'package:flutter/material.dart';
 import 'package:e_ambulance_apps/services/sharedPreferences.dart';
 import '../models/beranda_model.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 // pages
 import '../widgets/pesananDetail.dart';
@@ -20,6 +21,7 @@ class PesananAmbulance extends StatefulWidget {
 
 class _PesananAmbulanceState extends State<PesananAmbulance> {
   var flagPesanan = false;
+  var flagLoading = false;
   BerandaRepository berandaReps = BerandaRepository();
   Data pesananBaru = Data();
 
@@ -32,6 +34,7 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
               () => {
                 flagPesanan = true,
                 pesananBaru = value.data,
+                EasyLoading.dismiss(),
               },
             ),
           }
@@ -40,9 +43,10 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
             setState(
               () => {
                 flagPesanan = false,
+                EasyLoading.dismiss(),
               },
             ),
-          }
+          },
       },
     );
   }
@@ -86,6 +90,10 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
               Expanded(
                 child: GestureDetector(
                   onDoubleTap: () => {
+                    EasyLoading.show(
+                      status: 'loading...',
+                      maskType: EasyLoadingMaskType.black,
+                    ),
                     setState(() {
                       flagPesanan = !flagPesanan;
                       fetchData();

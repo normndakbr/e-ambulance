@@ -1,5 +1,6 @@
 import 'package:e_ambulance_apps/pages/pesananAmbulance.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../repositories/user_repositories.dart';
 import '../services/sharedPreferences.dart';
 import 'package:cool_alert/cool_alert.dart';
@@ -113,6 +114,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       onPressed: () {
+                        EasyLoading.show(
+                          status: 'loading...',
+                          maskType: EasyLoadingMaskType.black,
+                        );
                         UserRepository.login(userCtl.text, pwdCtl.text)
                             .then((value) => {
                                   print("p_id_user => " + value.data.p_id_user),
@@ -121,6 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                                   if (value.status == 200 &&
                                       value.data.p_id_user_level == userLevel)
                                     {
+                                      EasyLoading.dismiss(),
                                       CoolAlert.show(
                                           context: context,
                                           type: CoolAlertType.success,
@@ -146,6 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                                   else if (value.data.p_id_user_level !=
                                       userLevel)
                                     {
+                                      EasyLoading.dismiss(),
                                       CoolAlert.show(
                                           context: context,
                                           type: CoolAlertType.error,
@@ -158,6 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                                     }
                                   else
                                     {
+                                      EasyLoading.dismiss(),
                                       CoolAlert.show(
                                           context: context,
                                           type: CoolAlertType.error,
