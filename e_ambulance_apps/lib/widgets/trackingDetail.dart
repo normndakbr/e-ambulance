@@ -32,7 +32,7 @@ class TrackingDetail extends StatelessWidget {
               left: 20,
             ),
             child: Text(
-              'Tracking Ambulance',
+              'Tracking Ambulance ke Tujuan',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: primaryColor,
@@ -85,57 +85,71 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
     late BerandaRepository berandaRepository;
     final SharedPreferenceService sharedPref = SharedPreferenceService();
 
-    return Center(
-      child: SizedBox(
-        height: widget.height * 0.085,
-        width: widget.width * 0.8,
-        child: TextButton(
-          child: Text(
-            'Sampai Tujuan',
-            style: TextStyle(fontSize: widget.fontSize1),
-          ),
-          style: TextButton.styleFrom(
-            primary: Colors.white,
-            backgroundColor: widget.primaryColor,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(30),
+    return Column(
+      children: [
+        SizedBox(
+          height: widget.height * 0.08,
+        ),
+        Container(
+          color: Colors.white,
+          child: Image.asset('assets/images/ambulance3.png'),
+        ),
+        SizedBox(
+          height: widget.height * 0.2,
+        ),
+        Center(
+          child: SizedBox(
+            height: widget.height * 0.085,
+            width: widget.width * 0.8,
+            child: TextButton(
+              child: Text(
+                'Sampai Tujuan',
+                style: TextStyle(fontSize: widget.fontSize1),
               ),
-            ),
-          ),
-          onPressed: () async {
-            await sharedPref.readData('id_transaksi').then((value) => {
-                  setState(() => {
-                        idTransaksi = value,
-                      }),
-                });
-            // print("idTransaksi => " + idTransaksi);
-            BerandaRepository.updateStatusTransaksi(
-                    idTransaksi, 'accSampaiTujuan')
-                .then((value) => {
-                      CoolAlert.show(
-                          context: context,
-                          type: CoolAlertType.success,
-                          text: "Anda telah sampai di tujuan",
-                          confirmBtnText: 'Lanjut',
-                          confirmBtnColor: primaryColor,
-                          onConfirmBtnTap: () async {
-                            await sharedPref.writeData(
-                                'id_transaksi', idTransaksi);
-                            Navigator.pop(context);
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    TrackingAmbulanceToRSMH(),
-                              ),
-                            );
+              style: TextButton.styleFrom(
+                primary: Colors.white,
+                backgroundColor: widget.primaryColor,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(30),
+                  ),
+                ),
+              ),
+              onPressed: () async {
+                await sharedPref.readData('id_transaksi').then((value) => {
+                      setState(() => {
+                            idTransaksi = value,
                           }),
                     });
+                // print("idTransaksi => " + idTransaksi);
+                BerandaRepository.updateStatusTransaksi(
+                        idTransaksi, 'accSampaiTujuan')
+                    .then((value) => {
+                          CoolAlert.show(
+                              context: context,
+                              type: CoolAlertType.success,
+                              text: "Anda telah sampai di tujuan",
+                              confirmBtnText: 'Lanjut',
+                              confirmBtnColor: primaryColor,
+                              onConfirmBtnTap: () async {
+                                await sharedPref.writeData(
+                                    'id_transaksi', idTransaksi);
+                                Navigator.pop(context);
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        TrackingAmbulanceToRSMH(),
+                                  ),
+                                );
+                              }),
+                        });
 
-            // Navigator.pushNamed(context, '/pesananAmbulance');
-          },
+                // Navigator.pushNamed(context, '/pesananAmbulance');
+              },
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

@@ -33,7 +33,7 @@ class TrackingToRSMH extends StatelessWidget {
               left: 20,
             ),
             child: Text(
-              'Tracking Ambulance',
+              'Tracking Ambulance kembali ke Rumah Sakit',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: primaryColor,
@@ -44,10 +44,14 @@ class TrackingToRSMH extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: height * 0.08,
+          height: height * 0.2,
+        ),
+        Container(
+          color: Colors.white,
+          child: Image.asset('assets/images/ambulance4.png'),
         ),
         SizedBox(
-          height: height * 0.08,
+          height: height * 0.2,
         ),
         ButtonSampaiTujuan(
           height: height,
@@ -123,8 +127,7 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
                                               type: CoolAlertType.success,
                                               text:
                                                   "Anda telah sampai kembali di Rumah Sakit",
-                                              confirmBtnText:
-                                                  'Konfirmasi Selesai',
+                                              confirmBtnText: 'Pesanan Selesai',
                                               confirmBtnColor: primaryColor,
                                               onConfirmBtnTap: () async {
                                                 Navigator.pop(context);
