@@ -21,7 +21,7 @@ class HistoryRepository {
         '/' +
         accSupirSampaidiRS);
 
-    print("Url => " + url.toString());
+    print("Url FETCH HISTORY => " + url.toString());
 
     var apiResult = await http.get(url);
 
