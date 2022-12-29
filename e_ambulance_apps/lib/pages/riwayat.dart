@@ -1,6 +1,7 @@
 import 'package:e_ambulance_apps/widgets/historyItem.dart';
 import 'package:flutter/material.dart';
 import 'package:e_ambulance_apps/services/sharedPreferences.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../repositories/history_repositories.dart';
 import '../models/history_model.dart';
 import './pesananAmbulance.dart';
@@ -49,10 +50,15 @@ class _RiwayatState extends State<Riwayat> {
           {}
       },
     );
+    EasyLoading.dismiss();
   }
 
   @override
   void initState() {
+    EasyLoading.show(
+      status: 'loading...',
+      maskType: EasyLoadingMaskType.black,
+    );
     listData = [];
     mapData = items.map((e) {
       return {
