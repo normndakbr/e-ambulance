@@ -3,20 +3,28 @@ import 'dart:convert';
 class BerandaRes {
   late int status;
   late String message;
-  late Data data;
+  late Data? data;
 
   BerandaRes({
     required this.status,
     required this.message,
-    required this.data,
+    this.data,
   });
 
   factory BerandaRes.createHistoryRes(Map<String, dynamic> json) {
-    var response = BerandaRes(
-      status: json['status'],
-      message: json['message'],
-      data: Data.fromJson(json['data']),
-    );
+    var response;
+    if (json['status'] == 200) {
+      response = BerandaRes(
+        status: json['status'],
+        message: json['message'],
+        data: Data.fromJson(json['data']),
+      );
+    } else {
+      response = BerandaRes(
+        status: json['status'],
+        message: json['message'],
+      );
+    }
 
     return response;
   }

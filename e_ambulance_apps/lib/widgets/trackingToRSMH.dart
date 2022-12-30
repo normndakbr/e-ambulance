@@ -120,7 +120,7 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
                         idTransaksi = value,
                       }),
                 });
-            // print("idTransaksi => " + idTransaksi);
+
             BerandaRepository.updateStatusTransaksi(
                     idTransaksi, 'accSampaiDiRS')
                 .then((value) => {

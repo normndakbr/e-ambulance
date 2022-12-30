@@ -30,22 +30,34 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
       (value) => {
         if (value.status == 200)
           {
-            setState(
-              () => {
-                flagPesanan = true,
-                pesananBaru = value.data,
+            if (value.data != "")
+              {
+                setState(
+                  () => {
+                    flagPesanan = true,
+                    pesananBaru = value.data!,
+                  },
+                ),
                 EasyLoading.dismiss(),
-              },
-            ),
+              }
+            else
+              {
+                setState(
+                  () => {
+                    flagPesanan = false,
+                  },
+                ),
+                EasyLoading.dismiss(),
+              }
           }
         else
           {
             setState(
               () => {
                 flagPesanan = false,
-                EasyLoading.dismiss(),
               },
             ),
+            EasyLoading.dismiss(),
           },
       },
     );
@@ -94,10 +106,7 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
                       status: 'loading...',
                       maskType: EasyLoadingMaskType.black,
                     ),
-                    setState(() {
-                      flagPesanan = !flagPesanan;
-                      fetchData();
-                    })
+                    fetchData(),
                   },
                   child: Container(
                     decoration: BoxDecoration(
