@@ -12,7 +12,7 @@ class UserLogin {
   factory UserLogin.createUserLogin(Map<String, dynamic> json) {
     return UserLogin(
       status: json['status'],
-      message: json['message'],
+      message: json['message'].toString(),
       data: Data.fromJson(json['data']),
     );
   }

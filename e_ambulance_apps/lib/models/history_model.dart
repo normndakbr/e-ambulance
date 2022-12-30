@@ -19,7 +19,9 @@ class HistoryRes {
     return HistoryRes(
       status: json['status'],
       message: json['message'],
-      data: List<Data>.from(json["data"].map((x) => Data.fromJson(x))),
+      data: (json['data'] != "")
+          ? List<Data>.from(json["data"].map((x) => Data.fromJson(x)))
+          : [],
     );
   }
 

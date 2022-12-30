@@ -44,7 +44,7 @@ class PesananKosong extends StatelessWidget {
             'Sedang Tidak Ada Pesanan, Tap 2x dimana saja untuk me refresh data.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: height * 0.028,
+              fontSize: height * 0.02,
               fontWeight: FontWeight.w700,
             ),
           ),

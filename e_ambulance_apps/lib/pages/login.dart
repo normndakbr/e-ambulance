@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    var userLevel = 'cef5e5a8-ebdc-b854-5fbf-0615a66e97e2';
+    String userLevel = 'cef5e5a8-ebdc-b854-5fbf-0615a66e97e2';
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     const color = Color(0xFF0E9E2E);
@@ -113,70 +113,84 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         EasyLoading.show(
                           status: 'loading...',
                           maskType: EasyLoadingMaskType.black,
                         );
-                        UserRepository.login(userCtl.text, pwdCtl.text)
-                            .then((value) => {
-                                  print("p_id_user => " + value.data.p_id_user),
-                                  print("p_id_user_level => " +
-                                      value.data.p_id_user_level),
-                                  if (value.status == 200 &&
-                                      value.data.p_id_user_level == userLevel)
-                                    {
-                                      EasyLoading.dismiss(),
-                                      CoolAlert.show(
-                                          context: context,
-                                          type: CoolAlertType.success,
-                                          text: value.message,
-                                          confirmBtnText: 'Lanjut',
-                                          confirmBtnColor: color,
-                                          onConfirmBtnTap: () async {
-                                            await sharedPref.writeData(
-                                                'p_username',
-                                                value.data.p_username);
-                                            await sharedPref.writeData(
-                                                'p_id_user',
-                                                value.data.p_id_user);
-                                            Navigator.pop(context);
-                                            Navigator.of(context)
-                                                .pushReplacement(
-                                                    MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  PesananAmbulance(),
-                                            ));
-                                          }),
-                                    }
-                                  else if (value.data.p_id_user_level !=
-                                      userLevel)
-                                    {
-                                      EasyLoading.dismiss(),
-                                      CoolAlert.show(
-                                          context: context,
-                                          type: CoolAlertType.error,
-                                          text: 'Akun supir tidak terdaftar',
-                                          confirmBtnText: 'Coba Lagi',
-                                          confirmBtnColor: color,
-                                          onConfirmBtnTap: () {
-                                            Navigator.pop(context);
-                                          }),
-                                    }
-                                  else
-                                    {
-                                      EasyLoading.dismiss(),
-                                      CoolAlert.show(
-                                          context: context,
-                                          type: CoolAlertType.error,
-                                          text: value.message,
-                                          confirmBtnText: 'Coba Lagi',
-                                          confirmBtnColor: color,
-                                          onConfirmBtnTap: () {
-                                            Navigator.pop(context);
-                                          }),
-                                    }
-                                });
+                        await UserRepository.login(userCtl.text, pwdCtl.text)
+                            .then(
+                          (value) => {
+                            if (value.status == 401)
+                              {
+                                EasyLoading.dismiss(),
+                                CoolAlert.show(
+                                  context: context,
+                                  type: CoolAlertType.error,
+                                  text: value.message,
+                                  confirmBtnText: 'Coba Lagi',
+                                  confirmBtnColor: color,
+                                  onConfirmBtnTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              }
+                            else if (value.status == 404)
+                              {
+                                EasyLoading.dismiss(),
+                                CoolAlert.show(
+                                  context: context,
+                                  type: CoolAlertType.error,
+                                  text: value.message,
+                                  confirmBtnText: 'Coba Lagi',
+                                  confirmBtnColor: color,
+                                  onConfirmBtnTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              }
+                            else if (value.status == 200)
+                              {
+                                if (value.data.p_id_user_level == userLevel)
+                                  {
+                                    EasyLoading.dismiss(),
+                                    CoolAlert.show(
+                                      context: context,
+                                      type: CoolAlertType.success,
+                                      text: value.message,
+                                      confirmBtnText: 'Lanjut',
+                                      confirmBtnColor: color,
+                                      onConfirmBtnTap: () async {
+                                        await sharedPref.writeData('p_username',
+                                            value.data.p_username);
+                                        await sharedPref.writeData(
+                                            'p_id_user', value.data.p_id_user);
+                                        Navigator.pop(context);
+                                        Navigator.of(context).pushReplacement(
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                PesananAmbulance(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  }
+                                else
+                                  {
+                                    EasyLoading.dismiss(),
+                                    CoolAlert.show(
+                                        context: context,
+                                        type: CoolAlertType.error,
+                                        text: 'Akun supir tidak terdaftar',
+                                        confirmBtnText: 'Coba Lagi',
+                                        confirmBtnColor: color,
+                                        onConfirmBtnTap: () {
+                                          Navigator.pop(context);
+                                        }),
+                                  }
+                              }
+                          },
+                        );
                       },
                     ),
                   ),

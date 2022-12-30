@@ -27,12 +27,12 @@ class _RiwayatState extends State<Riwayat> {
               {
                 for (var i = 0; i < value.data.length; i++)
                   {
-                    print(i),
-                    print(value.data[i].pIdTransaksi),
-                    print(value.data[i].pNomorInvoice),
-                    print(value.data[i].pAlamat),
-                    print(value.data[i].pTanggalTransaksi.toString()),
-                    print(value.data[i].pIdStatusTransaksi),
+                    // print(i),
+                    // print(value.data[i].pIdTransaksi),
+                    // print(value.data[i].pNomorInvoice),
+                    // print(value.data[i].pAlamat),
+                    // print(value.data[i].pTanggalTransaksi.toString()),
+                    // print(value.data[i].pIdStatusTransaksi),
                     listData.add(
                       Data(
                         pIdTransaksi: value.data[i].pIdTransaksi,
@@ -43,7 +43,7 @@ class _RiwayatState extends State<Riwayat> {
                       ),
                     ),
                   },
-                print("List Data Length =>  " + listData.length.toString()),
+                // print("List Data Length =>  " + listData.length.toString()),
               }
           }
         else

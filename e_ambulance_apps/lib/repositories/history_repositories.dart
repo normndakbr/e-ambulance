@@ -17,8 +17,6 @@ class HistoryRepository {
         '/' +
         id_user +
         '/' +
-        accSupirSampaidiRS +
-        '/' +
         accSupirSampaidiRS);
 
     print("Url FETCH HISTORY => " + url.toString());
@@ -27,7 +25,7 @@ class HistoryRepository {
 
     var jsonObject = json.decode(apiResult.body);
     print(jsonObject);
-    // return listHistoryFromJson(jsonObject);
+
     return HistoryRes.createHistoryRes(jsonObject);
   }
 }
