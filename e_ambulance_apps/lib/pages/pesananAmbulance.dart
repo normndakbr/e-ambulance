@@ -1,3 +1,4 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:e_ambulance_apps/repositories/beranda_repositories.dart';
 import 'package:flutter/material.dart';
 import 'package:e_ambulance_apps/services/sharedPreferences.dart';
@@ -5,6 +6,7 @@ import '../models/beranda_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 // pages
+import '../widgets/MenuButton.dart';
 import '../widgets/pesananDetail.dart';
 import '../widgets/pesananKosong.dart';
 import './login.dart';
@@ -24,6 +26,7 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
   var flagLoading = false;
   BerandaRepository berandaReps = BerandaRepository();
   Data pesananBaru = Data();
+  final SharedPreferenceService sharedPref = SharedPreferenceService();
 
   fetchData() async {
     await BerandaRepository.fetchBeranda().then(
@@ -73,6 +76,7 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    const primaryColor = Color(0xFF0E9E2E);
 
     return SafeArea(
       child: WillPopScope(
@@ -84,18 +88,19 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
               SizedBox(
                 height: height * 0.03,
               ),
-              Align(
-                alignment: Alignment.topRight,
-                child: ConstrainedBox(
-                  child: Align(
-                    child: ButtonRiwayat(),
-                  ),
-                  constraints: BoxConstraints(
-                    minWidth: 50,
-                    maxWidth: 100,
-                  ),
-                ),
-              ),
+              MenuButton(primaryColor: primaryColor, sharedPref: sharedPref),
+              // Align(
+              //   alignment: Alignment.topRight,
+              //   child: ConstrainedBox(
+              //     child: Align(
+              //       child: ButtonRiwayat(),
+              //     ),
+              //     constraints: BoxConstraints(
+              //       minWidth: 50,
+              //       maxWidth: 100,
+              //     ),
+              //   ),
+              // ),
               SizedBox(
                 height: height * 0.03,
               ),
