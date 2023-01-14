@@ -44,12 +44,14 @@ class BerandaRepository {
       idStatusTransaksi = 'e17b741e-46a8-1712-cdb6-1c010a473697';
     }
 
-    // print("id Transaksi => " + id_transaksi);
-    // print("id Status Transaksi => " + idStatusTransaksi);
+    print("id Transaksi => " + id_transaksi);
+    print("Status Transaksi => " + jenis_update);
+    print("id Status Transaksi => " + idStatusTransaksi);
+    print("URL => " + url.toString());
 
-    var apiResult = await http.put(url, body: {
-      "id_transaksi": id_transaksi,
+    var apiResult = await http.post(url, body: {
       "id_status_transaksi": idStatusTransaksi,
+      "id_transaksi": id_transaksi,
     });
 
     var jsonObject = json.decode(apiResult.body);
