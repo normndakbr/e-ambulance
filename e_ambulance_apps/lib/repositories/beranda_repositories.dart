@@ -44,12 +44,14 @@ class BerandaRepository {
       idStatusTransaksi = 'e17b741e-46a8-1712-cdb6-1c010a473697';
     }
 
-    // print("id Transaksi => " + id_transaksi);
-    // print("id Status Transaksi => " + idStatusTransaksi);
+    print("id Transaksi => " + id_transaksi);
+    print("Status Transaksi => " + jenis_update);
+    print("id Status Transaksi => " + idStatusTransaksi);
+    print("URL => " + url.toString());
 
-    var apiResult = await http.put(url, body: {
-      "id_transaksi": id_transaksi,
+    var apiResult = await http.post(url, body: {
       "id_status_transaksi": idStatusTransaksi,
+      "id_transaksi": id_transaksi,
     });
 
     var jsonObject = json.decode(apiResult.body);
@@ -84,6 +86,21 @@ class BerandaRepository {
 
     var jsonObject = json.decode(apiResult.body);
     print("UPDATE STATUS SOPIR");
+    print(jsonObject);
+
+    return BerandaUpdateRes.createBerandaRes(jsonObject);
+  }
+
+  static Future<BerandaUpdateRes> updateLatLong(
+      String id_transaksi, String? lat, String? long) async {
+    var url =
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.sendLatLongEndpoint);
+
+    var apiResult = await http.post(url,
+        body: {"id_transaksi": id_transaksi, "lat": lat, "long": long});
+
+    var jsonObject = json.decode(apiResult.body);
+    print("LOCATION SENT!");
     print(jsonObject);
 
     return BerandaUpdateRes.createBerandaRes(jsonObject);

@@ -1,12 +1,12 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:e_ambulance_apps/pages/trackingAmbulance.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/beranda_model.dart';
 import 'package:intl/intl.dart';
-
 import '../repositories/beranda_repositories.dart';
 import '../services/sharedPreferences.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 class PesananDetail extends StatelessWidget {
   PesananDetail({
@@ -47,19 +47,7 @@ class PesananDetail extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: height * 0.08,
-        ),
-        Container(
-          padding: const EdgeInsets.only(bottom: 9, left: 33),
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'Ambulance 001',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: height * 0.028,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+          height: height * 0.03,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 33),
@@ -226,7 +214,7 @@ class PesananDetail extends StatelessWidget {
   }
 }
 
-class ContentDetail extends StatelessWidget {
+class ContentDetail extends StatefulWidget {
   const ContentDetail({
     Key? key,
     required this.height,
@@ -243,23 +231,87 @@ class ContentDetail extends StatelessWidget {
   final String idTransaksi;
 
   @override
+  State<ContentDetail> createState() => _ContentDetailState();
+}
+
+class _ContentDetailState extends State<ContentDetail> {
+  @override
   Widget build(BuildContext context) {
     const color = Color(0xFF0E9E2E);
     late BerandaRepository berandaRepository;
     final SharedPreferenceService sharedPref = SharedPreferenceService();
+    String? _currentAddress;
+    Position? _currentPosition;
+
+    Future<bool> _handleLocationPermission() async {
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Location services are disabled. Please enable the services')));
+        return false;
+      }
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Location permissions are denied')));
+          return false;
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Location permissions are permanently denied, we cannot request permissions.')));
+        return false;
+      }
+      return true;
+    }
+
+    Future<void> _getAddressFromLatLng(Position position) async {
+      await placemarkFromCoordinates(
+              _currentPosition!.latitude, _currentPosition!.longitude)
+          .then((List<Placemark> placemarks) {
+        Placemark place = placemarks[0];
+        setState(() {
+          _currentAddress =
+              '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
+        });
+      }).catchError((e) {
+        debugPrint(e);
+      });
+    }
+
+    Future<void> _getCurrentPosition() async {
+      final hasPermission = await _handleLocationPermission();
+
+      if (!hasPermission) return;
+      await Geolocator.getCurrentPosition(
+              desiredAccuracy: LocationAccuracy.high)
+          .then((Position position) {
+        setState(() => _currentPosition = position);
+        _getAddressFromLatLng(_currentPosition!);
+      }).catchError((e) {
+        debugPrint(e);
+      });
+    }
 
     return Center(
       child: SizedBox(
-        height: height * 0.085,
-        width: width * 0.8,
+        height: widget.height * 0.085,
+        width: widget.width * 0.8,
         child: TextButton(
           child: Text(
             'Konfirmasi',
-            style: TextStyle(fontSize: fontSize1),
+            style: TextStyle(fontSize: widget.fontSize1),
           ),
           style: TextButton.styleFrom(
             primary: Colors.white,
-            backgroundColor: primaryColor,
+            backgroundColor: widget.primaryColor,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
@@ -267,26 +319,40 @@ class ContentDetail extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            BerandaRepository.updateStatusTransaksi(idTransaksi, 'accSupir')
+            BerandaRepository.updateStatusTransaksi(
+                    widget.idTransaksi, 'accSupir')
                 .then(
               (value) => {
                 CoolAlert.show(
-                    context: context,
-                    type: CoolAlertType.success,
-                    text: "Pesanan berhasil diterima",
-                    confirmBtnText: 'Lanjut',
-                    confirmBtnColor: color,
-                    onConfirmBtnTap: () async {
-                      await sharedPref.writeData('id_transaksi', idTransaksi);
-                      Navigator.pop(context);
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              TrackingAmbulance(),
-                        ),
-                      );
-                    }),
-                // Navigator.pushNamed(context, '/trackingAmbulance'),
+                  context: context,
+                  type: CoolAlertType.success,
+                  text: "Pesanan berhasil diterima",
+                  confirmBtnText: 'Lanjut',
+                  confirmBtnColor: color,
+                  onConfirmBtnTap: () async {
+                    await _getCurrentPosition()
+                        .then((value) => {
+                              print("LatLong Print !"),
+                              print(_currentPosition?.latitude.toString()),
+                              print(_currentPosition?.longitude.toString()),
+                            })
+                        .then((value) async {
+                      await BerandaRepository.updateLatLong(
+                          widget.idTransaksi,
+                          _currentPosition?.latitude.toString(),
+                          _currentPosition?.longitude.toString());
+                    });
+
+                    // await sharedPref.writeData(
+                    //     'id_transaksi', widget.idTransaksi);
+                    // Navigator.pop(context);
+                    // Navigator.of(context).pushReplacement(
+                    //   MaterialPageRoute(
+                    //     builder: (BuildContext context) => TrackingAmbulance(),
+                    //   ),
+                    // );
+                  },
+                ),
               },
             );
           },

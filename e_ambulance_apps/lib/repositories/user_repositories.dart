@@ -8,7 +8,7 @@ class UserRepository {
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.loginEndpoint);
 
     var apiResult = await http.post(url, body: {
-      "username": username,
+      "username": username.toString().toLowerCase(),
       "password": password,
     });
 
