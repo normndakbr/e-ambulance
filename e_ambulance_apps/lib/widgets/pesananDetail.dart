@@ -47,19 +47,7 @@ class PesananDetail extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: height * 0.08,
-        ),
-        Container(
-          padding: const EdgeInsets.only(bottom: 9, left: 33),
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'Ambulance 001',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: height * 0.028,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+          height: height * 0.03,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 33),
@@ -342,11 +330,18 @@ class _ContentDetailState extends State<ContentDetail> {
                   confirmBtnText: 'Lanjut',
                   confirmBtnColor: color,
                   onConfirmBtnTap: () async {
-                    await _getCurrentPosition().then((value) => {
-                          print("LatLong Print !"),
-                          print(_currentPosition?.latitude.toString()),
-                          print(_currentPosition?.longitude.toString()),
-                        });
+                    await _getCurrentPosition()
+                        .then((value) => {
+                              print("LatLong Print !"),
+                              print(_currentPosition?.latitude.toString()),
+                              print(_currentPosition?.longitude.toString()),
+                            })
+                        .then((value) async {
+                      await BerandaRepository.updateLatLong(
+                          widget.idTransaksi,
+                          _currentPosition?.latitude.toString(),
+                          _currentPosition?.longitude.toString());
+                    });
 
                     // await sharedPref.writeData(
                     //     'id_transaksi', widget.idTransaksi);

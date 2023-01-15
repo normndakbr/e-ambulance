@@ -90,4 +90,19 @@ class BerandaRepository {
 
     return BerandaUpdateRes.createBerandaRes(jsonObject);
   }
+
+  static Future<BerandaUpdateRes> updateLatLong(
+      String id_transaksi, String? lat, String? long) async {
+    var url =
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.sendLatLongEndpoint);
+
+    var apiResult = await http.post(url,
+        body: {"id_transaksi": id_transaksi, "lat": lat, "long": long});
+
+    var jsonObject = json.decode(apiResult.body);
+    print("LOCATION SENT!");
+    print(jsonObject);
+
+    return BerandaUpdateRes.createBerandaRes(jsonObject);
+  }
 }
