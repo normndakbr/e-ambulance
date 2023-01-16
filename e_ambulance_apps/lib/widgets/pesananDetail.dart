@@ -7,6 +7,7 @@ import '../repositories/beranda_repositories.dart';
 import '../services/sharedPreferences.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:workmanager/workmanager.dart';
 
 class PesananDetail extends StatelessWidget {
   PesananDetail({
@@ -242,6 +243,22 @@ class _ContentDetailState extends State<ContentDetail> {
     final SharedPreferenceService sharedPref = SharedPreferenceService();
     String? _currentAddress;
     Position? _currentPosition;
+    const fetchBackground = "fetchBackground";
+    Workmanager wmInstance = Workmanager();
+
+    void callbackDispatcher() {
+      wmInstance.executeTask((task, inputData) async {
+        switch (task) {
+          case fetchBackground:
+            Position userLocation = await Geolocator.getCurrentPosition(
+                desiredAccuracy: LocationAccuracy.high);
+            print("userLatitude => " + userLocation.latitude.toString());
+            print("userLongitude => " + userLocation.latitude.toString());
+            break;
+        }
+        return Future.value(true);
+      });
+    }
 
     Future<bool> _handleLocationPermission() async {
       bool serviceEnabled;
@@ -298,6 +315,22 @@ class _ContentDetailState extends State<ContentDetail> {
       }).catchError((e) {
         debugPrint(e);
       });
+    }
+
+    @override
+    void initState() {
+      super.initState();
+
+      wmInstance.initialize(
+        callbackDispatcher,
+        isInDebugMode: true,
+      );
+
+      wmInstance.registerPeriodicTask(
+        "1",
+        fetchBackground,
+        frequency: Duration(seconds: 5),
+      );
     }
 
     return Center(
