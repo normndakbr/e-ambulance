@@ -77,16 +77,25 @@ class BerandaRepository {
     return BerandaUpdateRes.createBerandaRes(jsonObject);
   }
 
-  static Future<BerandaUpdateRes> updateStatusSopir(String id_transaksi) async {
+  static Future<BerandaUpdateRes> updateStatusSopir(
+      String id_supir, String id_supir_2) async {
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.updateStatusSopir);
 
     var apiResult = await http.post(url, body: {
-      "id_transaksi": id_transaksi,
+      "id_supir": id_supir,
     });
 
     var jsonObject = json.decode(apiResult.body);
     print("UPDATE STATUS SOPIR");
     print(jsonObject);
+
+    var apiResult2 = await http.post(url, body: {
+      "id_supir": id_supir_2,
+    });
+
+    var jsonObject2 = json.decode(apiResult.body);
+    print("UPDATE STATUS SOPIR 2");
+    print(jsonObject2);
 
     return BerandaUpdateRes.createBerandaRes(jsonObject);
   }

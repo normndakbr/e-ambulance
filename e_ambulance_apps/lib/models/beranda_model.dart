@@ -46,6 +46,8 @@ class Data {
   late String pKategoriAmbulance;
   late String pNomorPlat;
   late String pNomorInvoice;
+  late String pIdSupirDetail;
+  late String pIdSupirDetail2;
 
   Data({
     pIdTransaksi,
@@ -57,6 +59,8 @@ class Data {
     pKategoriAmbulance,
     pNomorPlat,
     pNomorInvoice,
+    pIdSupirDetail,
+    pIdSupirDetail2,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -69,6 +73,9 @@ class Data {
     pKategoriAmbulance = json["p_kategori_ambulance"];
     pNomorPlat = json["p_nomor_plat"];
     pNomorInvoice = json["p_nomor_invoice"];
+    pIdSupirDetail = json["p_id_supir_detail"];
+    pIdSupirDetail2 =
+        json["p_id_supir_detail_2"] == null ? "0" : json["p_id_supir_detail_2"];
   }
 
   Map<String, dynamic> toJson() => {
@@ -81,6 +88,8 @@ class Data {
         "p_kategori_ambulance": pKategoriAmbulance,
         "p_nomor_plat": pNomorPlat,
         "p_nomor_invoice": pNomorInvoice,
+        "p_id_supir_detail": pIdSupirDetail,
+        "p_id_supir_detail_2": pIdSupirDetail2,
       };
 }
 

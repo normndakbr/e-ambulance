@@ -7,7 +7,8 @@ import '../repositories/beranda_repositories.dart';
 import '../services/sharedPreferences.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:workmanager/workmanager.dart';
+import 'package:cron/cron.dart';
+import '../main.dart';
 
 class PesananDetail extends StatelessWidget {
   PesananDetail({
@@ -209,6 +210,8 @@ class PesananDetail extends StatelessWidget {
           fontSize1: fontSize1,
           primaryColor: primaryColor,
           idTransaksi: pesanan.pIdTransaksi,
+          pIdSupirDetail: pesanan.pIdSupirDetail,
+          pIdSupirDetail2: pesanan.pIdSupirDetail2,
         )
       ],
     );
@@ -223,6 +226,8 @@ class ContentDetail extends StatefulWidget {
     required this.fontSize1,
     required this.primaryColor,
     required this.idTransaksi,
+    required this.pIdSupirDetail,
+    required this.pIdSupirDetail2,
   }) : super(key: key);
 
   final double height;
@@ -230,6 +235,8 @@ class ContentDetail extends StatefulWidget {
   final double fontSize1;
   final Color primaryColor;
   final String idTransaksi;
+  final String pIdSupirDetail;
+  final String pIdSupirDetail2;
 
   @override
   State<ContentDetail> createState() => _ContentDetailState();
@@ -243,22 +250,6 @@ class _ContentDetailState extends State<ContentDetail> {
     final SharedPreferenceService sharedPref = SharedPreferenceService();
     String? _currentAddress;
     Position? _currentPosition;
-    const fetchBackground = "fetchBackground";
-    Workmanager wmInstance = Workmanager();
-
-    void callbackDispatcher() {
-      wmInstance.executeTask((task, inputData) async {
-        switch (task) {
-          case fetchBackground:
-            Position userLocation = await Geolocator.getCurrentPosition(
-                desiredAccuracy: LocationAccuracy.high);
-            print("userLatitude => " + userLocation.latitude.toString());
-            print("userLongitude => " + userLocation.latitude.toString());
-            break;
-        }
-        return Future.value(true);
-      });
-    }
 
     Future<bool> _handleLocationPermission() async {
       bool serviceEnabled;
@@ -317,20 +308,8 @@ class _ContentDetailState extends State<ContentDetail> {
       });
     }
 
-    @override
     void initState() {
       super.initState();
-
-      wmInstance.initialize(
-        callbackDispatcher,
-        isInDebugMode: true,
-      );
-
-      wmInstance.registerPeriodicTask(
-        "1",
-        fetchBackground,
-        frequency: Duration(seconds: 5),
-      );
     }
 
     return Center(
@@ -363,27 +342,33 @@ class _ContentDetailState extends State<ContentDetail> {
                   confirmBtnText: 'Lanjut',
                   confirmBtnColor: color,
                   onConfirmBtnTap: () async {
-                    await _getCurrentPosition()
-                        .then((value) => {
-                              print("LatLong Print !"),
-                              print(_currentPosition?.latitude.toString()),
-                              print(_currentPosition?.longitude.toString()),
-                            })
-                        .then((value) async {
-                      await BerandaRepository.updateLatLong(
-                          widget.idTransaksi,
-                          _currentPosition?.latitude.toString(),
-                          _currentPosition?.longitude.toString());
+                    cron.schedule(Schedule.parse('*/2 * * * *'), () async {
+                      await _getCurrentPosition()
+                          .then((value) => {
+                                print("LatLong Print !"),
+                                print(_currentPosition?.latitude.toString()),
+                                print(_currentPosition?.longitude.toString()),
+                              })
+                          .then((value) async {
+                        await BerandaRepository.updateLatLong(
+                            widget.idTransaksi,
+                            _currentPosition?.latitude.toString(),
+                            _currentPosition?.longitude.toString());
+                      });
                     });
 
-                    // await sharedPref.writeData(
-                    //     'id_transaksi', widget.idTransaksi);
-                    // Navigator.pop(context);
-                    // Navigator.of(context).pushReplacement(
-                    //   MaterialPageRoute(
-                    //     builder: (BuildContext context) => TrackingAmbulance(),
-                    //   ),
-                    // );
+                    await sharedPref.writeData(
+                        'id_transaksi', widget.idTransaksi);
+                    await sharedPref.writeData(
+                        'p_id_supir_detail', widget.pIdSupirDetail);
+                    await sharedPref.writeData(
+                        'p_id_supir_detail_2', widget.pIdSupirDetail2);
+                    Navigator.pop(context);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => TrackingAmbulance(),
+                      ),
+                    );
                   },
                 ),
               },
