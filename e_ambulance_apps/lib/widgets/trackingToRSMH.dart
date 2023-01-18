@@ -4,6 +4,9 @@ import 'package:e_ambulance_apps/pages/trackingAmbulanceToRSMH.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import '../main.dart';
 
 import '../repositories/beranda_repositories.dart';
 import '../services/sharedPreferences.dart';
@@ -35,7 +38,7 @@ class TrackingToRSMH extends StatelessWidget {
             ),
             child: Text(
               'Tracking Ambulance kembali ke Rumah Sakit',
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.left,
               style: TextStyle(
                 color: primaryColor,
                 fontWeight: FontWeight.w700,
@@ -45,7 +48,7 @@ class TrackingToRSMH extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: height * 0.2,
+          height: height * 0.09,
         ),
         Container(
           color: Colors.white,
@@ -87,9 +90,70 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
   @override
   Widget build(BuildContext context) {
     var idTransaksi = "";
+    var idSupir1 = "";
+    var idSupir2 = "";
     const primaryColor = Color(0xFF0E9E2E);
     late BerandaRepository berandaRepository;
     final SharedPreferenceService sharedPref = SharedPreferenceService();
+    String? _currentAddress;
+    Position? _currentPosition;
+
+    Future<bool> _handleLocationPermission() async {
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Location services are disabled. Please enable the services')));
+        return false;
+      }
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Location permissions are denied')));
+          return false;
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Location permissions are permanently denied, we cannot request permissions.')));
+        return false;
+      }
+      return true;
+    }
+
+    Future<void> _getAddressFromLatLng(Position position) async {
+      await placemarkFromCoordinates(
+              _currentPosition!.latitude, _currentPosition!.longitude)
+          .then((List<Placemark> placemarks) {
+        Placemark place = placemarks[0];
+        setState(() {
+          _currentAddress =
+              '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
+        });
+      }).catchError((e) {
+        debugPrint(e);
+      });
+    }
+
+    Future<void> _getCurrentPosition() async {
+      final hasPermission = await _handleLocationPermission();
+
+      if (!hasPermission) return;
+      await Geolocator.getCurrentPosition(
+              desiredAccuracy: LocationAccuracy.high)
+          .then((Position position) {
+        setState(() => _currentPosition = position);
+        _getAddressFromLatLng(_currentPosition!);
+      }).catchError((e) {
+        debugPrint(e);
+      });
+    }
 
     return Center(
       child: SizedBox(
@@ -114,19 +178,53 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
               status: 'loading...',
               maskType: EasyLoadingMaskType.black,
             );
-            await sharedPref.readData('id_transaksi').then((value) => {
-                  EasyLoading.dismiss(),
+
+            // await sharedPref.writeData(
+            //     'p_id_supir_detail', widget.pIdSupirDetail);
+            // await sharedPref.writeData(
+            //     'p_id_supir_detail_2', widget.pIdSupirDetail2);
+
+            await sharedPref.readData('p_id_supir_detail').then((value) => {
                   setState(() => {
-                        idTransaksi = value,
+                        idSupir1 = value,
                       }),
                 });
+
+            await sharedPref.readData('p_id_supir_detail_2').then((value) => {
+                  setState(() => {
+                        idSupir2 = value,
+                      }),
+                });
+
+            await sharedPref.readData('id_transaksi').then(
+                  (value) => {
+                    EasyLoading.dismiss(),
+                    setState(() => {
+                          idTransaksi = value,
+                        }),
+                  },
+                );
+
+            await _getCurrentPosition()
+                .then((value) => {
+                      print("Last LatLong Print !"),
+                      print(_currentPosition?.latitude.toString()),
+                      print(_currentPosition?.longitude.toString()),
+                    })
+                .then((value) async {
+              await BerandaRepository.updateLatLong(
+                  idTransaksi,
+                  _currentPosition?.latitude.toString(),
+                  _currentPosition?.longitude.toString());
+            });
 
             BerandaRepository.updateStatusTransaksi(
                     idTransaksi, 'accSampaiDiRS')
                 .then((value) => {
                       BerandaRepository.updateStatusAmbulance(idTransaksi)
                           .then((value) => {
-                                BerandaRepository.updateStatusSopir(idTransaksi)
+                                BerandaRepository.updateStatusSopir(
+                                        idSupir1, idSupir2)
                                     .then((value) => {
                                           if (value.status == 200)
                                             {
@@ -139,6 +237,9 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
                                                     'Pesanan Selesai',
                                                 confirmBtnColor: primaryColor,
                                                 onConfirmBtnTap: () async {
+                                                  idTransaksi = await sharedPref
+                                                      .readData('id_transaksi');
+                                                  cron.close();
                                                   Navigator.pop(context);
                                                   Navigator.of(context)
                                                       .pushReplacement(
@@ -158,9 +259,10 @@ class _ButtonSampaiTujuanState extends State<ButtonSampaiTujuan> {
                                                 context: context,
                                                 type: CoolAlertType.error,
                                                 text: value.message,
-                                                confirmBtnText: 'Lanjut',
+                                                confirmBtnText: 'Ok',
                                                 confirmBtnColor: primaryColor,
                                                 onConfirmBtnTap: () async {
+                                                  cron.close();
                                                   Navigator.pop(context);
                                                 },
                                               ),

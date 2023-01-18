@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../repositories/user_repositories.dart';
 import '../services/sharedPreferences.dart';
 import 'package:cool_alert/cool_alert.dart';
+import 'package:geolocator/geolocator.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -157,27 +158,29 @@ class _LoginPageState extends State<LoginPage> {
                                     {
                                       EasyLoading.dismiss(),
                                       CoolAlert.show(
-                                        context: context,
-                                        type: CoolAlertType.success,
-                                        text: value.message,
-                                        confirmBtnText: 'Lanjut',
-                                        confirmBtnColor: color,
-                                        onConfirmBtnTap: () async {
-                                          await sharedPref.writeData(
-                                              'p_username',
-                                              value.data.p_username);
-                                          await sharedPref.writeData(
-                                              'p_id_user',
-                                              value.data.p_id_user);
-                                          Navigator.pop(context);
-                                          Navigator.of(context).pushReplacement(
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  PesananAmbulance(),
-                                            ),
-                                          );
-                                        },
-                                      ),
+                                          context: context,
+                                          type: CoolAlertType.success,
+                                          text: value.message,
+                                          confirmBtnText: 'Lanjut',
+                                          confirmBtnColor: color,
+                                          onConfirmBtnTap: () async {
+                                            await sharedPref.writeData(
+                                                'p_username',
+                                                value.data.p_username);
+                                            await sharedPref.writeData(
+                                                'p_id_user',
+                                                value.data.p_id_user);
+
+                                            Navigator.pop(context);
+                                            Navigator.of(context)
+                                                .pushReplacement(
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        PesananAmbulance(),
+                                              ),
+                                            );
+                                          }),
                                     }
                                   else
                                     {

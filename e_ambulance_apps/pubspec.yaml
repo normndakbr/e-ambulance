@@ -22,6 +22,8 @@ dependencies:
   flutter_easyloading: ^3.0.0
   geolocator: ^8.2.0
   geocoding: ^2.0.4
+  workmanager: ^0.4.1
+  cron: ^0.5.1
 
 dev_dependencies:
   flutter_test:

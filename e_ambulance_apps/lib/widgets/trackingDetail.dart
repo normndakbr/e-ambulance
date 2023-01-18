@@ -43,10 +43,7 @@ class TrackingDetail extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: height * 0.08,
-        ),
-        SizedBox(
-          height: height * 0.08,
+          height: height * 0.04,
         ),
         ButtonSampaiTujuan(
           height: height,
