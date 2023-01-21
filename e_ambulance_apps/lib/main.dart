@@ -8,9 +8,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:cron/cron.dart';
 
 final cron = Cron();
-
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
+  // Workmanager().cancelAll();
   runApp(const MyApp());
 }
 
