@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HistoryItem extends StatelessWidget {
   String alamat;
@@ -52,12 +53,30 @@ class HistoryItem extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Text(statusPerjalanan),
-                  Text(noInvoice),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    statusPerjalanan,
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    noInvoice,
+                    style: TextStyle(fontSize: 12),
+                  ),
                   SizedBox(
                     height: 10,
                   ),
-                  Text(tglPerjalanan),
+                  Text(
+                    "Tanggal : " +
+                        DateFormat("dd-MM-yyyy").format(
+                          DateTime.parse(tglPerjalanan),
+                        ),
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ],
               ),
             ],
