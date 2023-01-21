@@ -25,51 +25,6 @@ class _LoginPageState extends State<LoginPage> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     const color = Color(0xFF0E9E2E);
-    LocationPermission permission;
-    String? _currentAddress;
-    Position? _currentPosition;
-
-    Future<bool> _handleLocationPermission() async {
-      bool serviceEnabled;
-      LocationPermission permission;
-
-      serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                'Location services are disabled. Please enable the services')));
-        return false;
-      }
-      permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Location permissions are denied')));
-          return false;
-        }
-      }
-      if (permission == LocationPermission.deniedForever) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                'Location permissions are permanently denied, we cannot request permissions.')));
-        return false;
-      }
-      return true;
-    }
-
-    Future<void> _getCurrentPosition() async {
-      final hasPermission = await _handleLocationPermission();
-
-      if (!hasPermission) return;
-      await Geolocator.getCurrentPosition(
-              desiredAccuracy: LocationAccuracy.high)
-          .then((Position position) {
-        setState(() => _currentPosition = position);
-      }).catchError((e) {
-        debugPrint(e);
-      });
-    }
 
     @override
     void initState() {
@@ -215,16 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                                             await sharedPref.writeData(
                                                 'p_id_user',
                                                 value.data.p_id_user);
-                                            _getCurrentPosition().then(
-                                              (value) => {
-                                                print("LatLong Print !"),
-                                                print(_currentPosition?.latitude
-                                                    .toString()),
-                                                print(_currentPosition
-                                                    ?.longitude
-                                                    .toString()),
-                                              },
-                                            );
+
                                             Navigator.pop(context);
                                             Navigator.of(context)
                                                 .pushReplacement(
