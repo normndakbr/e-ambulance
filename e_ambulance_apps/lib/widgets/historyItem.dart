@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class HistoryItem extends StatelessWidget {
-  final String alamat;
-  final String statusPerjalanan;
-  final String noInvoice;
-  final String tglPerjalanan;
+  String alamat;
+  String statusPerjalanan;
+  String noInvoice;
+  String tglPerjalanan;
 
   HistoryItem({
     Key? key,
