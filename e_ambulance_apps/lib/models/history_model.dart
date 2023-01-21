@@ -19,7 +19,7 @@ class HistoryRes {
     return HistoryRes(
       status: json['status'],
       message: json['message'],
-      data: (json['data'] != "")
+      data: (json['data'].length > 0)
           ? List<Data>.from(json["data"].map((x) => Data.fromJson(x)))
           : [],
     );
@@ -35,27 +35,30 @@ class HistoryRes {
 }
 
 class Data {
-  late String pIdTransaksi;
-  late String pNomorInvoice;
-  late String pAlamat;
-  late DateTime pTanggalTransaksi;
-  late String pIdStatusTransaksi;
+  String pIdTransaksi;
+  String pNomorInvoice;
+  String pAlamat;
+  DateTime pTanggalTransaksi;
+  String pIdStatusTransaksi;
+  String pStatusTransaksi;
 
   Data({
-    pIdTransaksi,
-    pNomorInvoice,
-    pAlamat,
-    pTanggalTransaksi,
-    pIdStatusTransaksi,
+    required this.pIdTransaksi,
+    required this.pNomorInvoice,
+    required this.pAlamat,
+    required this.pTanggalTransaksi,
+    required this.pIdStatusTransaksi,
+    required this.pStatusTransaksi,
   });
 
-  Data.fromJson(Map<String, dynamic> json) {
-    pIdTransaksi = json["p_id_transaksi"];
-    pNomorInvoice = json["p_nomor_invoice"];
-    pAlamat = json["p_alamat"];
-    pTanggalTransaksi = DateTime.parse(json["p_tanggal_transaksi"]);
-    pIdStatusTransaksi = json["p_id_status_transaksi"];
-  }
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+        pIdTransaksi: json["p_id_transaksi"],
+        pNomorInvoice: json["p_nomor_invoice"],
+        pAlamat: json["p_alamat"],
+        pTanggalTransaksi: DateTime.parse(json["p_tanggal_transaksi"]),
+        pIdStatusTransaksi: json["p_id_status_transaksi"],
+        pStatusTransaksi: json["p_status_transaksi"],
+      );
 
   Map<String, dynamic> toJson() => {
         "p_id_transaksi": pIdTransaksi,
