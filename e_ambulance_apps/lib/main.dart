@@ -9,7 +9,7 @@ import 'package:cron/cron.dart';
 
 final cron = Cron();
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }

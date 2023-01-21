@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class HistoryItem extends StatelessWidget {
-  final String alamat;
-  final String statusPerjalanan;
-  final String noInvoice;
-  final String tglPerjalanan;
+class HistoryItem extends StatefulWidget {
+  late String alamat = "test";
+  late String statusPerjalanan = "";
+  late String noInvoice = "";
+  late String tglPerjalanan = "";
 
   HistoryItem({
     Key? key,
@@ -14,6 +15,11 @@ class HistoryItem extends StatelessWidget {
     required this.tglPerjalanan,
   }) : super(key: key);
 
+  @override
+  State<HistoryItem> createState() => _HistoryItemState();
+}
+
+class _HistoryItemState extends State<HistoryItem> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -46,18 +52,35 @@ class HistoryItem extends StatelessWidget {
                   SizedBox(
                     width: width * 0.5,
                     child: Text(
-                      alamat,
+                      widget.alamat,
                       overflow: TextOverflow.fade,
                       softWrap: false,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Text(statusPerjalanan),
-                  Text(noInvoice),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    widget.statusPerjalanan,
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    widget.noInvoice,
+                    style: TextStyle(fontSize: 12),
+                  ),
                   SizedBox(
                     height: 10,
                   ),
-                  Text(tglPerjalanan),
+                  Text(
+                    "Tanggal : " +
+                        DateFormat("dd-MM-yyyy")
+                            .format(DateTime.parse(widget.tglPerjalanan)),
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ],
               ),
             ],
