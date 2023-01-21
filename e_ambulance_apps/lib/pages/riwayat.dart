@@ -25,14 +25,8 @@ class _RiwayatState extends State<Riwayat> {
           {
             if (value.data.isNotEmpty)
               {
-                for (var i = 0; i < value.data.length; i++)
-                  {
-                    // print(i),
-                    // print(value.data[i].pIdTransaksi),
-                    // print(value.data[i].pNomorInvoice),
-                    // print(value.data[i].pAlamat),
-                    // print(value.data[i].pTanggalTransaksi.toString()),
-                    // print(value.data[i].pIdStatusTransaksi),
+                setState(() {
+                  for (var i = 0; i < value.data.length; i++) {
                     listData.add(
                       Data(
                         pIdTransaksi: value.data[i].pIdTransaksi,
@@ -40,10 +34,12 @@ class _RiwayatState extends State<Riwayat> {
                         pAlamat: value.data[i].pAlamat,
                         pTanggalTransaksi: value.data[i].pTanggalTransaksi,
                         pIdStatusTransaksi: value.data[i].pIdStatusTransaksi,
+                        pStatusTransaksi: value.data[i].pStatusTransaksi,
                       ),
-                    ),
-                  },
-                // print("List Data Length =>  " + listData.length.toString()),
+                    );
+                  }
+                }),
+                print("List Data Length =>  " + listData.length.toString()),
               }
           }
         else
@@ -163,8 +159,7 @@ class _RiwayatState extends State<Riwayat> {
                       itemBuilder: (BuildContext context, int element) {
                         return HistoryItem(
                           alamat: listData[element].pAlamat,
-                          statusPerjalanan:
-                              listData[element].pIdStatusTransaksi,
+                          statusPerjalanan: listData[element].pStatusTransaksi,
                           noInvoice: listData[element].pNomorInvoice,
                           tglPerjalanan:
                               listData[element].pTanggalTransaksi.toString(),
