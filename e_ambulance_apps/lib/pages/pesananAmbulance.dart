@@ -35,12 +35,26 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
           {
             if (value.data != "")
               {
+                // if (value.data?.pIdStatusTransaksi ==
+                //     "83f80c00-a4da-2939-096b-e976b719d7ac")
+                //   {
+                //     // route ke /trackingAmbulance
+                //   }
+                // else if (value.data?.pIdStatusTransaksi ==
+                //     "3b6b76bc-20ca-7ebc-5afa-ed5d26b1c9d2")
+                //   {
+                //     // acc Sopir sampai di tujuan antar
+                //     // trackingAmbulanceToRSMH
+                //   }
+                // else
+                //   {
                 setState(
                   () => {
                     flagPesanan = true,
                     pesananBaru = value.data!,
                   },
                 ),
+                // },
                 EasyLoading.dismiss(),
               }
             else
