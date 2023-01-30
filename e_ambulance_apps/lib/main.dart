@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cron/cron.dart';
+import '../services/sharedPreferences.dart';
 
 final cron = Cron();
 Future<void> main() async {
@@ -22,6 +23,48 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  String p_username = "";
+  String p_id_user = "";
+  bool isLoggedIn = false;
+  final SharedPreferenceService sharedPref = SharedPreferenceService();
+
+  Future<void> checkUserLogin() async {
+    await sharedPref.readData("p_username").then((value) => {
+          if (value != null)
+            {
+              setState(() => {
+                    p_username = value,
+                  })
+            }
+        });
+    await sharedPref.readData("p_id_user").then((value) => {
+          if (value != null)
+            {
+              setState(() => {
+                    p_id_user = value,
+                  })
+            }
+        });
+
+    if (p_username != null && p_id_user != null) {
+      setState(() {
+        isLoggedIn = true;
+      });
+    } else {
+      setState(() {
+        isLoggedIn = false;
+      });
+    }
+    print("isLoggedIn => " + isLoggedIn.toString());
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // checkUserLogin();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     const color = Color(0xFF0E9E2E);
@@ -33,6 +76,8 @@ class _MyAppState extends State<MyApp> {
         scaffoldBackgroundColor: color,
       ),
       debugShowCheckedModeBanner: false,
+      // home: isLoggedIn ? PesananAmbulance() : LoginPage(),
+      // initialRoute: isLoggedIn ? '/pesananAmbulance' : '/login',
       home: LoginPage(),
       initialRoute: '/login',
       routes: {

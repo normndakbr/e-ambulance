@@ -1,5 +1,6 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:e_ambulance_apps/pages/trackingAmbulance.dart';
+import 'package:e_ambulance_apps/pages/trackingAmbulanceToRSMH.dart';
 import 'package:flutter/material.dart';
 import '../models/beranda_model.dart';
 import 'package:intl/intl.dart';
@@ -28,6 +29,20 @@ class PesananDetail extends StatelessWidget {
     var sizedBox1 = height * 0.03;
     var fontSize1 = height * 0.03;
 
+    if (pesanan.pIdStatusTransaksi == "83f80c00-a4da-2939-096b-e976b719d7ac") {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (BuildContext context) => TrackingAmbulance(),
+        ),
+      );
+    } else if (pesanan.pIdStatusTransaksi ==
+        "3b6b76bc-20ca-7ebc-5afa-ed5d26b1c9d2") {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => TrackingAmbulanceToRSMH(),
+        ),
+      );
+    }
     return Column(
       children: [
         Align(
