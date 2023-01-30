@@ -30,7 +30,7 @@ class PesananDetail extends StatelessWidget {
     var fontSize1 = height * 0.03;
 
     if (pesanan.pIdStatusTransaksi == "83f80c00-a4da-2939-096b-e976b719d7ac") {
-      Navigator.of(context).push(
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (BuildContext context) => TrackingAmbulance(),
         ),

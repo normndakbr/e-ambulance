@@ -24,6 +24,8 @@ class PesananAmbulance extends StatefulWidget {
 class _PesananAmbulanceState extends State<PesananAmbulance> {
   var flagPesanan = false;
   var flagLoading = false;
+  String pUsername = "";
+  String pIdUser = "";
   BerandaRepository berandaReps = BerandaRepository();
   Data pesananBaru = Data();
   final SharedPreferenceService sharedPref = SharedPreferenceService();
@@ -35,26 +37,12 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
           {
             if (value.data != "")
               {
-                // if (value.data?.pIdStatusTransaksi ==
-                //     "83f80c00-a4da-2939-096b-e976b719d7ac")
-                //   {
-                //     // route ke /trackingAmbulance
-                //   }
-                // else if (value.data?.pIdStatusTransaksi ==
-                //     "3b6b76bc-20ca-7ebc-5afa-ed5d26b1c9d2")
-                //   {
-                //     // acc Sopir sampai di tujuan antar
-                //     // trackingAmbulanceToRSMH
-                //   }
-                // else
-                //   {
                 setState(
                   () => {
                     flagPesanan = true,
                     pesananBaru = value.data!,
                   },
                 ),
-                // },
                 EasyLoading.dismiss(),
               }
             else
@@ -80,11 +68,41 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
     );
   }
 
+  void checkToken() async {
+    await sharedPref.readData("p_username").then((value) => {
+          setState(() {
+            pUsername = value;
+            print("pUsername di PesananAmbulance => " + value);
+          }),
+        });
+
+    await sharedPref.readData("p_id_user").then((value) => {
+          setState(() {
+            pIdUser = value;
+            print("pIdUser di PesananAmbulance => " + value);
+          }),
+        });
+  }
+
   @override
   void initState() {
-    fetchData();
+    checkToken();
+    if (pUsername == null && pIdUser == null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (BuildContext context) => LoginPage(),
+        ),
+      );
+    } else {
+      fetchData();
+    }
     super.initState();
   }
+
+//   - check token di halaman pesanan ambulance, lalu balikkan ke login page apabila token berisi null
+// - check token di halaman login, lalu balikkan ke pesanan ambulance apabila token berisi null
+// - check id_transaksi di halaman pesanan ambulance, apabila status id adalah acc supir, maka redirect ke halaman tracking ke tujuan
+// - check id_transaksi di halaman pesanan ambulance, apabila status id adalah sampai tujuan, maka redirect ke halaman tracking kembali ke rumah sakit
 
   @override
   Widget build(BuildContext context) {

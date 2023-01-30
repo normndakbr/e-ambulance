@@ -30,33 +30,38 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> checkUserLogin() async {
     await sharedPref.readData("p_username").then((value) => {
-          setState(() => {
-                p_username = value,
-              })
+          if (value != null)
+            {
+              setState(() => {
+                    p_username = value,
+                  })
+            }
         });
     await sharedPref.readData("p_id_user").then((value) => {
-          setState(() => {
-                p_id_user = value,
-              })
+          if (value != null)
+            {
+              setState(() => {
+                    p_id_user = value,
+                  })
+            }
         });
 
-    if (p_username != "" && p_id_user != "") {
-      print("true");
+    if (p_username != null && p_id_user != null) {
       setState(() {
         isLoggedIn = true;
       });
     } else {
-      print("false");
       setState(() {
         isLoggedIn = false;
       });
     }
+    print("isLoggedIn => " + isLoggedIn.toString());
   }
 
   @override
   void initState() {
     // TODO: implement initState
-    checkUserLogin();
+    // checkUserLogin();
     super.initState();
   }
 
@@ -71,8 +76,10 @@ class _MyAppState extends State<MyApp> {
         scaffoldBackgroundColor: color,
       ),
       debugShowCheckedModeBanner: false,
+      // home: isLoggedIn ? PesananAmbulance() : LoginPage(),
+      // initialRoute: isLoggedIn ? '/pesananAmbulance' : '/login',
       home: LoginPage(),
-      initialRoute: isLoggedIn == true ? '/pesananAmbulance' : '/login',
+      initialRoute: '/login',
       routes: {
         '/login': (context) => LoginPage(),
         '/pesananAmbulance': (context) => PesananAmbulance(),

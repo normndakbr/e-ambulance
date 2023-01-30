@@ -18,6 +18,39 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController pwdCtl = TextEditingController();
   final SharedPreferenceService sharedPref = SharedPreferenceService();
   late UserRepository userRepository;
+  String p_username = "";
+  String p_id_user = "";
+
+  void checkToken() async {
+    await sharedPref.readData("p_username").then((value) => {
+          setState(() => {
+                p_username = value,
+                print(value),
+              })
+        });
+    await sharedPref.readData("p_id_user").then((value) => {
+          setState(() => {
+                p_id_user = value,
+                print(value),
+              })
+        });
+    if (p_username != null && p_id_user != null) {
+      print("Masuk sini");
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (BuildContext context) => PesananAmbulance(),
+        ),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    userRepository = UserRepository();
+    checkToken();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +58,6 @@ class _LoginPageState extends State<LoginPage> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     const color = Color(0xFF0E9E2E);
-
-    @override
-    void initState() {
-      userRepository = UserRepository();
-      super.initState();
-    }
 
     return WillPopScope(
       onWillPop: () async => false,
