@@ -30,7 +30,7 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
   Data pesananBaru = Data();
   final SharedPreferenceService sharedPref = SharedPreferenceService();
 
-  fetchData() async {
+  Future<void> fetchData() async {
     await BerandaRepository.fetchBeranda().then(
       (value) => {
         if (value.status == 200)
@@ -57,12 +57,15 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
           }
         else
           {
-            setState(
-              () => {
-                flagPesanan = false,
-              },
-            ),
-            EasyLoading.dismiss(),
+            if (this.mounted)
+              {
+                setState(
+                  () => {
+                    flagPesanan = false,
+                  },
+                ),
+                EasyLoading.dismiss(),
+              }
           },
       },
     );
@@ -98,11 +101,6 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
     }
     super.initState();
   }
-
-//   - check token di halaman pesanan ambulance, lalu balikkan ke login page apabila token berisi null
-// - check token di halaman login, lalu balikkan ke pesanan ambulance apabila token berisi null
-// - check id_transaksi di halaman pesanan ambulance, apabila status id adalah acc supir, maka redirect ke halaman tracking ke tujuan
-// - check id_transaksi di halaman pesanan ambulance, apabila status id adalah sampai tujuan, maka redirect ke halaman tracking kembali ke rumah sakit
 
   @override
   Widget build(BuildContext context) {

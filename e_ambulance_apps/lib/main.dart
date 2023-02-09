@@ -4,7 +4,6 @@ import 'package:e_ambulance_apps/pages/trackingAmbulance.dart';
 import 'package:e_ambulance_apps/pages/riwayat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:cron/cron.dart';
 import '../services/sharedPreferences.dart';
 
@@ -28,6 +27,11 @@ class _MyAppState extends State<MyApp> {
   bool isLoggedIn = false;
   final SharedPreferenceService sharedPref = SharedPreferenceService();
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Future<void> checkUserLogin() async {
     await sharedPref.readData("p_username").then((value) => {
           if (value != null)
@@ -47,22 +51,18 @@ class _MyAppState extends State<MyApp> {
         });
 
     if (p_username != null && p_id_user != null) {
-      setState(() {
-        isLoggedIn = true;
-      });
+      if (this.mounted) {
+        setState(() {
+          isLoggedIn = true;
+        });
+      }
     } else {
-      setState(() {
-        isLoggedIn = false;
-      });
+      if (this.mounted) {
+        setState(() {
+          isLoggedIn = false;
+        });
+      }
     }
-    print("isLoggedIn => " + isLoggedIn.toString());
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    // checkUserLogin();
-    super.initState();
   }
 
   @override
@@ -76,8 +76,6 @@ class _MyAppState extends State<MyApp> {
         scaffoldBackgroundColor: color,
       ),
       debugShowCheckedModeBanner: false,
-      // home: isLoggedIn ? PesananAmbulance() : LoginPage(),
-      // initialRoute: isLoggedIn ? '/pesananAmbulance' : '/login',
       home: LoginPage(),
       initialRoute: '/login',
       routes: {
