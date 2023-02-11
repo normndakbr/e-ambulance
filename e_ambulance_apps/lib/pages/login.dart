@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../repositories/user_repositories.dart';
 import '../services/sharedPreferences.dart';
+import '../services/locationServices.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -17,25 +18,24 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController userCtl = TextEditingController();
   TextEditingController pwdCtl = TextEditingController();
   final SharedPreferenceService sharedPref = SharedPreferenceService();
+  final LocationServices locationServices = LocationServices();
   late UserRepository userRepository;
   String p_username = "";
   String p_id_user = "";
 
   void checkToken() async {
+    locationServices.getDevicePosition();
     await sharedPref.readData("p_username").then((value) => {
           setState(() => {
                 p_username = value,
-                print(value),
               })
         });
     await sharedPref.readData("p_id_user").then((value) => {
           setState(() => {
                 p_id_user = value,
-                print(value),
               })
         });
     if (p_username != null && p_id_user != null) {
-      print("Masuk sini");
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (BuildContext context) => PesananAmbulance(),
@@ -148,6 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                             status: 'loading...',
                             maskType: EasyLoadingMaskType.black,
                           );
+
                           await UserRepository.login(userCtl.text, pwdCtl.text)
                               .then(
                             (value) => {

@@ -6,12 +6,16 @@ import '../models/beranda_model.dart';
 import 'package:intl/intl.dart';
 import '../repositories/beranda_repositories.dart';
 import '../services/sharedPreferences.dart';
+import '../services/locationServices.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cron/cron.dart';
 import '../main.dart';
 
-class PesananDetail extends StatelessWidget {
+Position? _currentPosition;
+String idTransaksi = "";
+
+class PesananDetail extends StatefulWidget {
   PesananDetail({
     Key? key,
     required this.height,
@@ -24,25 +28,70 @@ class PesananDetail extends StatelessWidget {
   Data pesanan = Data();
 
   @override
+  State<PesananDetail> createState() => _PesananDetailState();
+}
+
+class _PesananDetailState extends State<PesananDetail> {
+  @override
   Widget build(BuildContext context) {
     const primaryColor = Color(0xFF0E9E2E);
-    var sizedBox1 = height * 0.03;
-    var fontSize1 = height * 0.03;
+    var sizedBox1 = widget.height * 0.03;
+    var fontSize1 = widget.height * 0.03;
+    final LocationServices locationServices = LocationServices();
+    final SharedPreferenceService sharedPref = SharedPreferenceService();
 
-    if (pesanan.pIdStatusTransaksi == "83f80c00-a4da-2939-096b-e976b719d7ac") {
+    if (widget.pesanan.pIdStatusTransaksi ==
+        "83f80c00-a4da-2939-096b-e976b719d7ac") {
+      cron.schedule(Schedule.parse('*/2 * * * *'), () async {
+        await sharedPref
+            .readData('id_transaksi')
+            .then((value) => idTransaksi = value);
+        await locationServices
+            .getDevicePosition()
+            .then((value) => {
+                  print("LatLong Print !"),
+                  print(_currentPosition?.latitude.toString()),
+                  print(_currentPosition?.longitude.toString()),
+                })
+            .then((value) async {
+          await BerandaRepository.updateLatLong(
+              idTransaksi,
+              _currentPosition?.latitude.toString(),
+              _currentPosition?.longitude.toString());
+        });
+      });
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (BuildContext context) => TrackingAmbulance(),
         ),
       );
-    } else if (pesanan.pIdStatusTransaksi ==
+    } else if (widget.pesanan.pIdStatusTransaksi ==
         "3b6b76bc-20ca-7ebc-5afa-ed5d26b1c9d2") {
+      cron.schedule(Schedule.parse('*/2 * * * *'), () async {
+        await sharedPref
+            .readData('id_transaksi')
+            .then((value) => idTransaksi = value);
+        await locationServices
+            .getDevicePosition()
+            .then((value) => {
+                  print("LatLong Print !"),
+                  print(_currentPosition?.latitude.toString()),
+                  print(_currentPosition?.longitude.toString()),
+                })
+            .then((value) async {
+          await BerandaRepository.updateLatLong(
+              idTransaksi,
+              _currentPosition?.latitude.toString(),
+              _currentPosition?.longitude.toString());
+        });
+      });
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) => TrackingAmbulanceToRSMH(),
         ),
       );
     }
+
     return Column(
       children: [
         Align(
@@ -58,13 +107,13 @@ class PesananDetail extends StatelessWidget {
               style: TextStyle(
                 color: primaryColor,
                 fontWeight: FontWeight.w700,
-                fontSize: height * 0.030,
+                fontSize: widget.height * 0.030,
               ),
             ),
           ),
         ),
         SizedBox(
-          height: height * 0.03,
+          height: widget.height * 0.03,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 33),
@@ -85,7 +134,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text(pesanan.pNamaLengkap),
+                    child: Text(widget.pesanan.pNamaLengkap),
                   ),
                 ],
               ),
@@ -106,7 +155,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text(pesanan.pAlamat),
+                    child: Text(widget.pesanan.pAlamat),
                   ),
                 ],
               ),
@@ -126,7 +175,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text(pesanan.pNomorTelepon),
+                    child: Text(widget.pesanan.pNomorTelepon),
                   ),
                 ],
               ),
@@ -148,7 +197,7 @@ class PesananDetail extends StatelessWidget {
                     width: 150,
                     child: Text(
                       DateFormat('dd-MM-yyyy')
-                          .format(pesanan.pTanggalTransaksi),
+                          .format(widget.pesanan.pTanggalTransaksi),
                     ),
                   ),
                 ],
@@ -169,7 +218,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text(pesanan.pKategoriAmbulance),
+                    child: Text(widget.pesanan.pKategoriAmbulance),
                   ),
                 ],
               ),
@@ -189,7 +238,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text(pesanan.pNomorPlat),
+                    child: Text(widget.pesanan.pNomorPlat),
                   ),
                 ],
               ),
@@ -209,7 +258,7 @@ class PesananDetail extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 150,
-                    child: Text(pesanan.pNomorInvoice),
+                    child: Text(widget.pesanan.pNomorInvoice),
                   ),
                 ],
               ),
@@ -217,16 +266,16 @@ class PesananDetail extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: height * 0.08,
+          height: widget.height * 0.08,
         ),
         ContentDetail(
-          height: height,
-          width: width,
+          height: widget.height,
+          width: widget.width,
           fontSize1: fontSize1,
           primaryColor: primaryColor,
-          idTransaksi: pesanan.pIdTransaksi,
-          pIdSupirDetail: pesanan.pIdSupirDetail,
-          pIdSupirDetail2: pesanan.pIdSupirDetail2,
+          idTransaksi: widget.pesanan.pIdTransaksi,
+          pIdSupirDetail: widget.pesanan.pIdSupirDetail,
+          pIdSupirDetail2: widget.pesanan.pIdSupirDetail2,
         )
       ],
     );
@@ -261,10 +310,7 @@ class _ContentDetailState extends State<ContentDetail> {
   @override
   Widget build(BuildContext context) {
     const color = Color(0xFF0E9E2E);
-    late BerandaRepository berandaRepository;
     final SharedPreferenceService sharedPref = SharedPreferenceService();
-    String? _currentAddress;
-    Position? _currentPosition;
 
     Future<bool> _handleLocationPermission() async {
       bool serviceEnabled;
@@ -295,36 +341,21 @@ class _ContentDetailState extends State<ContentDetail> {
       return true;
     }
 
-    Future<void> _getAddressFromLatLng(Position position) async {
-      await placemarkFromCoordinates(
-              _currentPosition!.latitude, _currentPosition!.longitude)
-          .then((List<Placemark> placemarks) {
-        Placemark place = placemarks[0];
-        setState(() {
-          _currentAddress =
-              '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
-        });
-      }).catchError((e) {
-        debugPrint(e);
-      });
-    }
-
     Future<void> _getCurrentPosition() async {
       final hasPermission = await _handleLocationPermission();
 
       if (!hasPermission) return;
       await Geolocator.getCurrentPosition(
-              desiredAccuracy: LocationAccuracy.high)
-          .then((Position position) {
-        setState(() => _currentPosition = position);
-        _getAddressFromLatLng(_currentPosition!);
+        desiredAccuracy: LocationAccuracy.high,
+      ).then((Position position) {
+        setState(
+          () => {
+            _currentPosition = position,
+          },
+        );
       }).catchError((e) {
         debugPrint(e);
       });
-    }
-
-    void initState() {
-      super.initState();
     }
 
     return Center(
