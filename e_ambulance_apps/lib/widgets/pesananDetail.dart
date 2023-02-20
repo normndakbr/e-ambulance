@@ -37,60 +37,6 @@ class _PesananDetailState extends State<PesananDetail> {
     const primaryColor = Color(0xFF0E9E2E);
     var sizedBox1 = widget.height * 0.03;
     var fontSize1 = widget.height * 0.03;
-    final LocationServices locationServices = LocationServices();
-    final SharedPreferenceService sharedPref = SharedPreferenceService();
-
-    if (widget.pesanan.pIdStatusTransaksi ==
-        "83f80c00-a4da-2939-096b-e976b719d7ac") {
-      cron.schedule(Schedule.parse('*/2 * * * *'), () async {
-        await sharedPref
-            .readData('id_transaksi')
-            .then((value) => idTransaksi = value);
-        await locationServices
-            .getDevicePosition()
-            .then((value) => {
-                  print("LatLong Print !"),
-                  print(_currentPosition?.latitude.toString()),
-                  print(_currentPosition?.longitude.toString()),
-                })
-            .then((value) async {
-          await BerandaRepository.updateLatLong(
-              idTransaksi,
-              _currentPosition?.latitude.toString(),
-              _currentPosition?.longitude.toString());
-        });
-      });
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (BuildContext context) => TrackingAmbulance(),
-        ),
-      );
-    } else if (widget.pesanan.pIdStatusTransaksi ==
-        "3b6b76bc-20ca-7ebc-5afa-ed5d26b1c9d2") {
-      cron.schedule(Schedule.parse('*/2 * * * *'), () async {
-        await sharedPref
-            .readData('id_transaksi')
-            .then((value) => idTransaksi = value);
-        await locationServices
-            .getDevicePosition()
-            .then((value) => {
-                  print("LatLong Print !"),
-                  print(_currentPosition?.latitude.toString()),
-                  print(_currentPosition?.longitude.toString()),
-                })
-            .then((value) async {
-          await BerandaRepository.updateLatLong(
-              idTransaksi,
-              _currentPosition?.latitude.toString(),
-              _currentPosition?.longitude.toString());
-        });
-      });
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) => TrackingAmbulanceToRSMH(),
-        ),
-      );
-    }
 
     return Column(
       children: [
