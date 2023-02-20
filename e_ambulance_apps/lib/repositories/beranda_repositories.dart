@@ -33,6 +33,7 @@ class BerandaRepository {
   static Future<BerandaUpdateRes> updateStatusTransaksi(
       String id_transaksi, String jenis_update) async {
     String idStatusTransaksi = "";
+    final SharedPreferenceService sharedPref = SharedPreferenceService();
     var url =
         Uri.parse(ApiConstants.baseUrl + ApiConstants.updateStatusTransaksi);
 
@@ -48,6 +49,8 @@ class BerandaRepository {
     print("Status Transaksi => " + jenis_update);
     print("id Status Transaksi => " + idStatusTransaksi);
     print("URL => " + url.toString());
+
+    await sharedPref.writeData('idStatusTransaksi', idStatusTransaksi);
 
     var apiResult = await http.post(url, body: {
       "id_status_transaksi": idStatusTransaksi,

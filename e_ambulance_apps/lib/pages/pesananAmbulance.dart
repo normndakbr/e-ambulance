@@ -1,11 +1,17 @@
 import 'package:cool_alert/cool_alert.dart';
+import 'package:cron/cron.dart';
+import 'package:e_ambulance_apps/main.dart';
+import 'package:e_ambulance_apps/pages/trackingAmbulance.dart';
+import 'package:e_ambulance_apps/pages/trackingAmbulanceToRSMH.dart';
 import 'package:e_ambulance_apps/repositories/beranda_repositories.dart';
 import 'package:flutter/material.dart';
 import 'package:e_ambulance_apps/services/sharedPreferences.dart';
+import 'package:geolocator/geolocator.dart';
 import '../models/beranda_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 // pages
+import '../services/locationServices.dart';
 import '../widgets/MenuButton.dart';
 import '../widgets/pesananDetail.dart';
 import '../widgets/pesananKosong.dart';
@@ -13,6 +19,8 @@ import './login.dart';
 
 // widgets
 import '../widgets/ButtonRiwayat.dart';
+
+Position? _currentPosition;
 
 class PesananAmbulance extends StatefulWidget {
   const PesananAmbulance({Key? key}) : super(key: key);
@@ -26,69 +34,121 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
   var flagLoading = false;
   String pUsername = "";
   String pIdUser = "";
+  String _idTransaksi = "";
   BerandaRepository berandaReps = BerandaRepository();
   Data pesananBaru = Data();
   final SharedPreferenceService sharedPref = SharedPreferenceService();
+  final LocationServices locationServices = LocationServices();
+
+  Future<void> checkStatusTransaksi() async {
+    print("Check Status Transaksi!");
+    await sharedPref.readData('id_transaksi').then((id_transaksi) async {
+      if (id_transaksi != "" || id_transaksi != null) {
+        await sharedPref
+            .readData('idStatusTransaksi')
+            .then((id_status_transaksi) => {
+                  if (id_status_transaksi ==
+                      "83f80c00-a4da-2939-096b-e976b719d7ac")
+                    {
+                      cron.schedule(Schedule.parse('*/2 * * * *'), () async {
+                        await locationServices
+                            .getDevicePosition()
+                            .then((value) => {
+                                  print("LatLong Print !"),
+                                  print(_currentPosition?.latitude.toString()),
+                                  print(_currentPosition?.longitude.toString()),
+                                })
+                            .then((value) async {
+                          await BerandaRepository.updateLatLong(
+                              id_transaksi,
+                              _currentPosition?.latitude.toString(),
+                              _currentPosition?.longitude.toString());
+                        });
+                      }),
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              TrackingAmbulance(),
+                        ),
+                      ),
+                    }
+                  else if (id_status_transaksi ==
+                      "3b6b76bc-20ca-7ebc-5afa-ed5d26b1c9d2")
+                    {
+                      cron.schedule(Schedule.parse('*/2 * * * *'), () async {
+                        await locationServices
+                            .getDevicePosition()
+                            .then((value) => {
+                                  print("LatLong Print !"),
+                                  print(_currentPosition?.latitude.toString()),
+                                  print(_currentPosition?.longitude.toString()),
+                                })
+                            .then((value) async {
+                          await BerandaRepository.updateLatLong(
+                              id_transaksi,
+                              _currentPosition?.latitude.toString(),
+                              _currentPosition?.longitude.toString());
+                        });
+                      }),
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              TrackingAmbulanceToRSMH(),
+                        ),
+                      ),
+                    }
+                });
+      }
+    });
+  }
 
   Future<void> fetchData() async {
+    print("Fetch Data!");
     await BerandaRepository.fetchBeranda().then(
-      (value) => {
-        if (value.status == 200)
-          {
-            if (value.data != "")
-              {
-                setState(
-                  () => {
-                    flagPesanan = true,
-                    pesananBaru = value.data!,
-                  },
-                ),
-                EasyLoading.dismiss(),
-              }
-            else
-              {
-                setState(
-                  () => {
-                    flagPesanan = false,
-                  },
-                ),
-                EasyLoading.dismiss(),
-              }
+      (value) async {
+        if (value.status == 200) {
+          if (value.data != "") {
+            await sharedPref.writeData(
+                'id_transaksi', value.data!.pIdTransaksi);
+            setState(
+              () => {
+                flagPesanan = true,
+                pesananBaru = value.data!,
+              },
+            );
+            EasyLoading.dismiss();
+          } else {
+            setState(() => {flagPesanan = false});
+            EasyLoading.dismiss();
           }
-        else
-          {
-            if (this.mounted)
-              {
-                setState(
-                  () => {
-                    flagPesanan = false,
-                  },
-                ),
-                EasyLoading.dismiss(),
-              }
-          },
+        } else {
+          if (this.mounted) {
+            setState(() => {flagPesanan = false});
+            EasyLoading.dismiss();
+          }
+        }
       },
     );
   }
 
   void checkToken() async {
+    print("Check Token!");
     await sharedPref.readData("p_username").then((value) => {
           setState(() {
             pUsername = value;
-            print("pUsername di PesananAmbulance => " + value);
-          }),
+          })
         });
 
     await sharedPref.readData("p_id_user").then((value) => {
           setState(() {
             pIdUser = value;
-            print("pIdUser di PesananAmbulance => " + value);
-          }),
+          })
         });
   }
 
   @override
   void initState() {
+    checkStatusTransaksi();
     checkToken();
     if (pUsername == null && pIdUser == null) {
       Navigator.of(context).pushReplacement(
