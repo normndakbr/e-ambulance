@@ -19,12 +19,11 @@ class HistoryRepository {
         '/' +
         accSupirSampaidiRS);
 
-    print("Url FETCH HISTORY => " + url.toString());
+    // print("Url FETCH HISTORY => " + url.toString());
 
     var apiResult = await http.get(url);
-
     var jsonObject = json.decode(apiResult.body);
-    print(jsonObject);
+    // print(jsonObject);
 
     return HistoryRes.createHistoryRes(jsonObject);
   }

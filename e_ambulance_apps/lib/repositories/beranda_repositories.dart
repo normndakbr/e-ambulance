@@ -12,19 +12,12 @@ class BerandaRepository {
     final SharedPreferenceService sharedPref = SharedPreferenceService();
     var id_user = await sharedPref.readData('p_id_user');
     String accKasir = "625962e2-7dd1-a6de-a5aa-b04e760a8c8c";
-
-    // print("id user => " + id_user);
-    // print("accKasir => " + accKasir);
-
     var url = Uri.parse(ApiConstants.baseUrl +
         ApiConstants.readTransaksiEndpoint +
         '/' +
         id_user +
         '/' +
         accKasir);
-
-    // print("Url => " + url.toString());
-
     var apiResult = await http.get(url);
     var jsonObject = json.decode(apiResult.body);
     return BerandaRes.createHistoryRes(jsonObject);
@@ -45,22 +38,12 @@ class BerandaRepository {
       idStatusTransaksi = 'e17b741e-46a8-1712-cdb6-1c010a473697';
     }
 
-    print("id Transaksi => " + id_transaksi);
-    print("Status Transaksi => " + jenis_update);
-    print("id Status Transaksi => " + idStatusTransaksi);
-    print("URL => " + url.toString());
-
     await sharedPref.writeData('idStatusTransaksi', idStatusTransaksi);
-
     var apiResult = await http.post(url, body: {
       "id_status_transaksi": idStatusTransaksi,
       "id_transaksi": id_transaksi,
     });
-
     var jsonObject = json.decode(apiResult.body);
-    print("UPDATE STATUS TRANSAKSI");
-    print(jsonObject);
-
     return BerandaUpdateRes.createBerandaRes(jsonObject);
   }
 
@@ -72,10 +55,7 @@ class BerandaRepository {
     var apiResult = await http.post(url, body: {
       "id_transaksi": id_transaksi,
     });
-
     var jsonObject = json.decode(apiResult.body);
-    print("UPDATE STATUS AMBULANCE");
-    print(jsonObject);
 
     return BerandaUpdateRes.createBerandaRes(jsonObject);
   }
@@ -89,16 +69,11 @@ class BerandaRepository {
     });
 
     var jsonObject = json.decode(apiResult.body);
-    print("UPDATE STATUS SOPIR");
-    print(jsonObject);
 
     var apiResult2 = await http.post(url, body: {
       "id_supir": id_supir_2,
     });
-
     var jsonObject2 = json.decode(apiResult.body);
-    print("UPDATE STATUS SOPIR 2");
-    print(jsonObject2);
 
     return BerandaUpdateRes.createBerandaRes(jsonObject);
   }
@@ -110,10 +85,7 @@ class BerandaRepository {
 
     var apiResult = await http.post(url,
         body: {"id_transaksi": id_transaksi, "lat": lat, "long": long});
-
     var jsonObject = json.decode(apiResult.body);
-    print("LOCATION SENT!");
-    print(jsonObject);
 
     return BerandaUpdateRes.createBerandaRes(jsonObject);
   }

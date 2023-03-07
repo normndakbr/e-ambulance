@@ -41,7 +41,6 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
   final LocationServices locationServices = LocationServices();
 
   Future<void> checkStatusTransaksi() async {
-    print("Check Status Transaksi!");
     await sharedPref.readData('id_transaksi').then((id_transaksi) async {
       if (id_transaksi != "" || id_transaksi != null) {
         await sharedPref
@@ -132,7 +131,6 @@ class _PesananAmbulanceState extends State<PesananAmbulance> {
   }
 
   void checkToken() async {
-    print("Check Token!");
     await sharedPref.readData("p_username").then((value) => {
           setState(() {
             pUsername = value;
