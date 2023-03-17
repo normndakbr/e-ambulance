@@ -1,6 +1,8 @@
 class ApiConstants {
-  static String baseUrl = 'http://e-ambulance.isale.web.id/api';
+  static String baseUrl = 'http://ambulan.rsmh.co.id/api';
+  // static String baseUrl = 'http://e-ambulance.isale.web.id/api';
   // static String baseUrl = 'http://dev-rsmh.isale.web.id/api';
+
   static String id_status_transaksi = "e17b741e-46a8-1712-cdb6-1c010a473697";
 
   // login
